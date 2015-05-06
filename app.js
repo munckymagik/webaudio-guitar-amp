@@ -152,6 +152,7 @@
         console.log('stream.');
         var source = window.__source = audioCtx.createMediaStreamSource(stream);
         var distortion = audioCtx.createWaveShaper();
+        var lowPass = audioCtx.createBiquadFilter();
         var compressor = makeCompressor(audioCtx);
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
         var mixer = new Mixer(audioCtx, document.querySelector("[data-module='mixer']"));
@@ -160,9 +161,12 @@
 
         distortion.curve = makeDistortionCurve(18);
         distortion.oversample = '4x';
+        lowPass.type = 'lowpass';
+        lowPass.frequency.value = 2000;
 
         source.connect(distortion);
-        distortion.connect(compressor);
+        distortion.connect(lowPass);
+        lowPass.connect(compressor);
         compressor.connect(echo.input());
         echo.connect(mixer.input());
         mixer.connect(panner);
