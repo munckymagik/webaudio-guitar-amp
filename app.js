@@ -199,7 +199,7 @@
         var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
         var compressor = makeCompressor(audioCtx);
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
-        var mixer = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
+        var amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
         var panner = audioCtx.createStereoPanner();
         var lfo = new LFO(audioCtx, panner.pan, document.querySelector("[data-module='panner']"));
 
@@ -207,8 +207,8 @@
         distortion.connect(compressor);
         compressor.connect(echo.input());
         echo.connect(panner);
-        panner.connect(mixer.input());
-        mixer.connect(audioCtx.destination);
+        panner.connect(amplifier.input());
+        amplifier.connect(audioCtx.destination);
       },
       function() {
         // error
