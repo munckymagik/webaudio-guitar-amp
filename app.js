@@ -105,6 +105,20 @@
     return curve;
   };
 
+  function Distortion(audioCtx, uiElement) {
+    this.distortion = audioCtx.createWaveShaper();
+    this.distortion.curve = makeDistortionCurve(18);
+    this.distortion.oversample = '4x';
+  }
+
+  Distortion.prototype.connect = function(node) {
+    this.distortion.connect(node);
+  }
+
+  Distortion.prototype.input = function() {
+    return this.distortion;
+  }
+
   //
   // LFO
   //
@@ -164,7 +178,7 @@
       function(stream) {
         console.log('stream.');
         var source = window.__source = audioCtx.createMediaStreamSource(stream);
-        var distortion = audioCtx.createWaveShaper();
+        var distortion = new Distortion(audioCtx);
         var lowPass = audioCtx.createBiquadFilter();
         var compressor = makeCompressor(audioCtx);
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
@@ -177,7 +191,7 @@
         lowPass.type = 'lowpass';
         lowPass.frequency.value = 2000;
 
-        source.connect(distortion);
+        source.connect(distortion.input());
         distortion.connect(lowPass);
         lowPass.connect(compressor);
         compressor.connect(echo.input());
