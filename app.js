@@ -27,7 +27,7 @@
 
     this._input.gain.value = 1.0;
     this.output.gain.value = 1.0;
-    delay.delayTime.value = 0.15 // 150ms
+    delay.delayTime.value = 0.100 // 100ms
     feedback.gain.value = 0.25;
     wetLevel.gain.value = 0.50;
 
