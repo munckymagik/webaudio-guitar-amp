@@ -106,9 +106,17 @@
   };
 
   function Distortion(audioCtx, uiElement) {
+    var self = this;
+
+    this.amountCtrl = uiElement.querySelector('.js-distortion-amount');
+
     this.distortion = audioCtx.createWaveShaper();
-    this.distortion.curve = makeDistortionCurve(18);
+    this.distortion.curve = makeDistortionCurve(this.amountCtrl.value);
     this.distortion.oversample = '4x';
+
+    this.amountCtrl.addEventListener('change', function() {
+      self.distortion.curve = makeDistortionCurve(self.amountCtrl.value);
+    });
   }
 
   Distortion.prototype.connect = function(node) {
@@ -178,7 +186,7 @@
       function(stream) {
         console.log('stream.');
         var source = window.__source = audioCtx.createMediaStreamSource(stream);
-        var distortion = new Distortion(audioCtx);
+        var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
         var lowPass = audioCtx.createBiquadFilter();
         var compressor = makeCompressor(audioCtx);
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
@@ -186,8 +194,6 @@
         var panner = audioCtx.createStereoPanner();
         var lfo = new LFO(audioCtx, panner.pan, document.querySelector("[data-module='panner']"));
 
-        distortion.curve = makeDistortionCurve(18);
-        distortion.oversample = '4x';
         lowPass.type = 'lowpass';
         lowPass.frequency.value = 2000;
 
