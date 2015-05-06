@@ -65,11 +65,11 @@
     var self = this;
 
     this.gain = audioCtx.createGain();
-    this.uiControl = uiElement.querySelector('.mixer__control');
+    this.volumeCtrl = uiElement.querySelector('.js-amplifier-volume');
 
-    self.setValue(self.uiControl.value);
-    this.uiControl.addEventListener('input', function() {
-      self.setValue(self.uiControl.value);
+    self.setValue(self.volumeCtrl.value);
+    this.volumeCtrl.addEventListener('input', function() {
+      self.setValue(self.volumeCtrl.value);
     });
   }
 
@@ -168,7 +168,7 @@
         var lowPass = audioCtx.createBiquadFilter();
         var compressor = makeCompressor(audioCtx);
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
-        var mixer = new Amplifer(audioCtx, document.querySelector("[data-module='mixer']"));
+        var mixer = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
         var panner = audioCtx.createStereoPanner();
         var lfo = new LFO(audioCtx, panner.pan, document.querySelector("[data-module='panner']"));
 
