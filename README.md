@@ -1,3 +1,3 @@
 # WebAudio Guitar-Amp
 
-A virtual guitar amp in the browser. Written at the ScotlandJS Web Audio Hack Day 2015.
+A virtual guitar amp in the browser. Written at the [ScotlandJS](http://scotlandjs.com/) Web Audio Hack Day 2015.
