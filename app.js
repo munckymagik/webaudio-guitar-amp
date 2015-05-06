@@ -112,8 +112,8 @@
     this.lfo = audioCtx.createOscillator();
     this.lfoGain = audioCtx.createGain();
 
-    this.lfo.frequency.value = 1.0;
-    this.lfoGain.gain.value = 0.1;
+    this.lfo.frequency.value = 5.0;
+    this.lfoGain.gain.value = 0.0;
 
     this.lfo.connect(this.lfoGain);
     this.lfoGain.connect(paramToModulate);
