@@ -123,6 +123,22 @@
   }
 
   //
+  // Compressor
+  //
+
+  function makeCompressor(audioCtx) {
+    var compressor = audioCtx.createDynamicsCompressor();
+    compressor.threshold.value = -50;
+    compressor.knee.value = 40;
+    compressor.ratio.value = 12;
+    compressor.reduction.value = -20;
+    compressor.attack.value = 0;
+    compressor.release.value = 0.25;
+
+    return compressor;
+  }
+
+  //
   // MAIN ---------------------------------------------------------------------
   //
 
@@ -140,12 +156,14 @@
         var mixer = new Mixer(audioCtx, document.querySelector("[data-module='mixer']"));
         var panner = audioCtx.createStereoPanner();
         var lfo = new LFO(audioCtx, panner.pan);
+        var compressor = makeCompressor(audioCtx);
 
         distortion.curve = makeDistortionCurve(100);
         distortion.oversample = '4x';
 
         source.connect(distortion);
-        distortion.connect(echo.input());
+        distortion.connect(compressor);
+        compressor.connect(echo.input());
         echo.connect(mixer.input());
         mixer.connect(panner);
         panner.connect(audioCtx.destination);
