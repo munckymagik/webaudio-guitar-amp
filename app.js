@@ -168,9 +168,9 @@
         distortion.connect(lowPass);
         lowPass.connect(compressor);
         compressor.connect(echo.input());
-        echo.connect(mixer.input());
-        mixer.connect(panner);
-        panner.connect(audioCtx.destination);
+        echo.connect(panner);
+        panner.connect(mixer.input());
+        mixer.connect(audioCtx.destination);
       },
       function() {
         // error
