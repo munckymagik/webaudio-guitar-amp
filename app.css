@@ -6,6 +6,14 @@ body {
   color: white;
 }
 
+a {
+  color: #ddd;
+}
+
+a:hover {
+  color: white;
+}
+
 .panel, [data-module] {
   margin: 12px;
   padding: 12px;
