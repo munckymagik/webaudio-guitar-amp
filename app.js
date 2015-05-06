@@ -152,11 +152,11 @@
         console.log('stream.');
         var source = window.__source = audioCtx.createMediaStreamSource(stream);
         var distortion = audioCtx.createWaveShaper();
+        var compressor = makeCompressor(audioCtx);
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
         var mixer = new Mixer(audioCtx, document.querySelector("[data-module='mixer']"));
         var panner = audioCtx.createStereoPanner();
         var lfo = new LFO(audioCtx, panner.pan);
-        var compressor = makeCompressor(audioCtx);
 
         distortion.curve = makeDistortionCurve(18);
         distortion.oversample = '4x';
