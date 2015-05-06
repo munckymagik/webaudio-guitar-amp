@@ -112,8 +112,8 @@
     this.lfo = audioCtx.createOscillator();
     this.lfoGain = audioCtx.createGain();
 
-    this.lfo.frequency.value = 2.0;
-    this.lfoGain.gain.value = 0.3;
+    this.lfo.frequency.value = 1.0;
+    this.lfoGain.gain.value = 0.1;
 
     this.lfo.connect(this.lfoGain);
     this.lfoGain.connect(paramToModulate);
@@ -132,7 +132,7 @@
     compressor.knee.value = 40;
     compressor.ratio.value = 12;
     compressor.reduction.value = -20;
-    compressor.attack.value = 0;
+    compressor.attack.value = 0.25;
     compressor.release.value = 0.25;
 
     return compressor;
