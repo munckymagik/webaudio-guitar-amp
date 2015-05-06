@@ -40,7 +40,7 @@
     wetLevel.connect(this.output);
 
     this.uiWetControl = uiElement.querySelector('.echo__wet');
-    this.uiWetControl.addEventListener('change', function() {
+    this.uiWetControl.addEventListener('input', function() {
       wetLevel.gain.value = self.uiWetControl.value;
     });
   }
@@ -61,26 +61,27 @@
   // Mixer ---------------------------------------------------------------------
   //
 
-  function Mixer(audioCtx, uiElement) {
+  function Amplifer(audioCtx, uiElement) {
     var self = this;
 
     this.gain = audioCtx.createGain();
     this.uiControl = uiElement.querySelector('.mixer__control');
 
-    this.uiControl.addEventListener('mousemove', function() {
+    self.setValue(self.uiControl.value);
+    this.uiControl.addEventListener('input', function() {
       self.setValue(self.uiControl.value);
     });
   }
 
-  Mixer.prototype.connect = function(node) {
+  Amplifer.prototype.connect = function(node) {
     this.gain.connect(node);
   }
 
-  Mixer.prototype.setValue = function(gainValue) {
+  Amplifer.prototype.setValue = function(gainValue) {
     this.gain.gain.value = gainValue;
   }
 
-  Mixer.prototype.input = function() {
+  Amplifer.prototype.input = function() {
     return this.gain;
   }
 
@@ -155,7 +156,7 @@
         var lowPass = audioCtx.createBiquadFilter();
         var compressor = makeCompressor(audioCtx);
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
-        var mixer = new Mixer(audioCtx, document.querySelector("[data-module='mixer']"));
+        var mixer = new Amplifer(audioCtx, document.querySelector("[data-module='mixer']"));
         var panner = audioCtx.createStereoPanner();
         var lfo = new LFO(audioCtx, panner.pan);
 
