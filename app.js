@@ -109,18 +109,28 @@
     var self = this;
 
     this.amountCtrl = uiElement.querySelector('.js-distortion-amount');
+    this.toneCtrl = uiElement.querySelector('.js-distortion-tone');
 
     this.distortion = audioCtx.createWaveShaper();
-    this.distortion.curve = makeDistortionCurve(this.amountCtrl.value);
+    this.distortion.curve = makeDistortionCurve(parseInt(this.amountCtrl.value));
     this.distortion.oversample = '4x';
 
+    this.lowPass = audioCtx.createBiquadFilter();
+    this.lowPass.type = 'lowpass';
+    this.lowPass.frequency.value = parseInt(this.toneCtrl.value);
+
+    this.distortion.connect(this.lowPass);
+
     this.amountCtrl.addEventListener('change', function() {
-      self.distortion.curve = makeDistortionCurve(self.amountCtrl.value);
+      self.distortion.curve = makeDistortionCurve(parseInt(self.amountCtrl.value));
+    });
+    this.toneCtrl.addEventListener('input', function() {
+      self.lowPass.frequency.value = parseInt(self.toneCtrl.value);
     });
   }
 
   Distortion.prototype.connect = function(node) {
-    this.distortion.connect(node);
+    this.lowPass.connect(node);
   }
 
   Distortion.prototype.input = function() {
@@ -187,19 +197,14 @@
         console.log('stream.');
         var source = window.__source = audioCtx.createMediaStreamSource(stream);
         var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
-        var lowPass = audioCtx.createBiquadFilter();
         var compressor = makeCompressor(audioCtx);
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
         var mixer = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
         var panner = audioCtx.createStereoPanner();
         var lfo = new LFO(audioCtx, panner.pan, document.querySelector("[data-module='panner']"));
 
-        lowPass.type = 'lowpass';
-        lowPass.frequency.value = 2000;
-
         source.connect(distortion.input());
-        distortion.connect(lowPass);
-        lowPass.connect(compressor);
+        distortion.connect(compressor);
         compressor.connect(echo.input());
         echo.connect(panner);
         panner.connect(mixer.input());
