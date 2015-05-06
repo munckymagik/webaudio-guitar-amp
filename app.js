@@ -105,6 +105,24 @@
   };
 
   //
+  // LFO
+  //
+
+  function LFO(audioCtx, paramToModulate) {
+    this.lfo = audioCtx.createOscillator();
+    this.lfoGain = audioCtx.createGain();
+
+    this.lfo.frequency.value = 2.0;
+    this.lfoGain.gain.value = 0.3;
+
+    this.lfo.connect(this.lfoGain);
+    this.lfoGain.connect(paramToModulate);
+    this.lfo.connect(paramToModulate);
+
+    this.lfo.start();
+  }
+
+  //
   // MAIN ---------------------------------------------------------------------
   //
 
@@ -120,6 +138,8 @@
         var distortion = audioCtx.createWaveShaper();
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
         var mixer = new Mixer(audioCtx, document.querySelector("[data-module='mixer']"));
+        var panner = audioCtx.createStereoPanner();
+        var lfo = new LFO(audioCtx, panner.pan);
 
         distortion.curve = makeDistortionCurve(100);
         distortion.oversample = '4x';
@@ -127,7 +147,8 @@
         source.connect(distortion);
         distortion.connect(echo.input());
         echo.connect(mixer.input());
-        mixer.connect(audioCtx.destination);
+        mixer.connect(panner);
+        panner.connect(audioCtx.destination);
       },
       function() {
         // error
