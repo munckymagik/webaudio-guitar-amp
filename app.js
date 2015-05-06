@@ -25,11 +25,15 @@
         feedback = audioCtx.createGain(),
         wetLevel = audioCtx.createGain();
 
+    this.uiWetControl = uiElement.querySelector('.js-echo-mix');
+    this.uiFeedbackControl = uiElement.querySelector('.js-echo-feedback');
+    this.uiDelayControl = uiElement.querySelector('.js-echo-delay');
+
     this._input.gain.value = 1.0;
     this.output.gain.value = 1.0;
-    delay.delayTime.value = 0.100 // 100ms
-    feedback.gain.value = 0.25;
-    wetLevel.gain.value = 0.50;
+    delay.delayTime.value = parseFloat(this.uiDelayControl.value);
+    feedback.gain.value = parseFloat(this.uiFeedbackControl.value);
+    wetLevel.gain.value = this.uiWetControl.value;
 
     this._input.connect(delay);
     this._input.connect(this.output);
@@ -39,9 +43,14 @@
     feedback.connect(delay);
     wetLevel.connect(this.output);
 
-    this.uiWetControl = uiElement.querySelector('.echo__wet');
     this.uiWetControl.addEventListener('input', function() {
       wetLevel.gain.value = self.uiWetControl.value;
+    });
+    this.uiFeedbackControl.addEventListener('input', function() {
+      feedback.gain.value = parseFloat(self.uiFeedbackControl.value);
+    });
+    this.uiDelayControl.addEventListener('input', function() {
+      delay.delayTime.value = parseFloat(self.uiDelayControl.value);
     });
   }
 

@@ -23,9 +23,15 @@
 
     <div data-module="echo">
       <h2>Echo</h2>
-      <label for="echo__wet">Wet Mix</label>
-      <input type="range" id="echo__wet" class="echo__wet"
-             min="0.0" max="1.0" step="0.01" value="0.10">
+      <label for="echo__wet">Mix</label>
+      <input type="range" id="echo__wet" class="js-echo-mix"
+             min="0.0" max="1.0" step="0.01" value="0.15">
+      <label for="echo__feedback">Feedback</label>
+      <input type="range" id="echo__feedback" class="js-echo-feedback"
+             min="0.0" max="0.99" step="0.01" value="0.25">
+      <label for="echo__delay">Delay</label>
+      <input type="range" id="echo__delay" class="js-echo-delay"
+             min="0.000" max="1.000" step="0.010" value="0.100">
     </div>
 
     <div data-module="panner">
