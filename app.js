@@ -158,7 +158,7 @@
         var lfo = new LFO(audioCtx, panner.pan);
         var compressor = makeCompressor(audioCtx);
 
-        distortion.curve = makeDistortionCurve(100);
+        distortion.curve = makeDistortionCurve(18);
         distortion.oversample = '4x';
 
         source.connect(distortion);
