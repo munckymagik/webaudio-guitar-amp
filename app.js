@@ -195,6 +195,22 @@
   }
 
   //
+  // NodeWrapper (for the sake of a consistent interface when chaining stuff together)
+  //
+
+  function WebAudioNodeWrapper(webaudioNode) {
+    this.node = webaudioNode;
+  }
+
+  WebAudioNodeWrapper.prototype.connect = function(node) {
+    this.node.connect(node);
+  };
+
+  WebAudioNodeWrapper.prototype.input = function() {
+    return this.node;
+  };
+
+  //
   // MAIN ---------------------------------------------------------------------
   //
 
@@ -208,16 +224,16 @@
         console.log('stream.');
         var source = window.__source = audioCtx.createMediaStreamSource(stream);
         var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
-        var compressor = makeCompressor(audioCtx);
+        var compressor = new WebAudioNodeWrapper(makeCompressor(audioCtx));
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
         var amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
-        var panner = audioCtx.createStereoPanner();
-        var lfo = new LFO(audioCtx, panner.pan, document.querySelector("[data-module='panner']"));
+        var panner = new WebAudioNodeWrapper(audioCtx.createStereoPanner());
+        var lfo = new LFO(audioCtx, panner.input(), document.querySelector("[data-module='panner']"));
 
         source.connect(distortion.input());
-        distortion.connect(compressor);
+        distortion.connect(compressor.input());
         compressor.connect(echo.input());
-        echo.connect(panner);
+        echo.connect(panner.input());
         panner.connect(amplifier.input());
         amplifier.connect(audioCtx.destination);
       },
