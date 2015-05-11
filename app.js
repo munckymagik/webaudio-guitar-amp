@@ -56,15 +56,15 @@
 
   SlapBackEcho.prototype.connect = function(node) {
     this.output.connect(node);
-  }
+  };
 
   SlapBackEcho.prototype.setValue = function(gainValue) {
     this.gain.gain.value = gainValue;
-  }
+  };
 
   SlapBackEcho.prototype.input = function() {
     return this._input;
-  }
+  };
 
   //
   // Mixer ---------------------------------------------------------------------
@@ -84,15 +84,15 @@
 
   Amplifer.prototype.connect = function(node) {
     this.gain.connect(node);
-  }
+  };
 
   Amplifer.prototype.setValue = function(gainValue) {
     this.gain.gain.value = gainValue;
-  }
+  };
 
   Amplifer.prototype.input = function() {
     return this.gain;
-  }
+  };
 
   //
   // Distortion
@@ -112,7 +112,7 @@
     }
 
     return curve;
-  };
+  }
 
   function Distortion(audioCtx, uiElement) {
     var self = this;
@@ -140,11 +140,11 @@
 
   Distortion.prototype.connect = function(node) {
     this.lowPass.connect(node);
-  }
+  };
 
   Distortion.prototype.input = function() {
     return this.distortion;
-  }
+  };
 
   //
   // LFO
