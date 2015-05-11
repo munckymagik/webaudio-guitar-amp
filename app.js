@@ -98,6 +98,7 @@
   // Distortion
   //
 
+  // Taken from: https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode
   function makeDistortionCurve(amount) {
     var k = typeof amount === 'number' ? amount : 50,
         n_samples = 44100,
@@ -180,6 +181,7 @@
   // Compressor
   //
 
+  // Based on code from: https://developer.mozilla.org/en-US/docs/Web/API/DynamicsCompressorNode
   function makeCompressor(audioCtx) {
     var compressor = audioCtx.createDynamicsCompressor();
     compressor.threshold.value = -50;
