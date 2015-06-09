@@ -228,7 +228,7 @@
         var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
         var amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
         var panner = new WebAudioNodeWrapper(audioCtx.createStereoPanner());
-        var lfo = new LFO(audioCtx, panner.input(), document.querySelector("[data-module='panner']"));
+        var lfo = new LFO(audioCtx, panner.input().pan, document.querySelector("[data-module='panner']"));
 
         source.connect(distortion.input());
         distortion.connect(compressor.input());
