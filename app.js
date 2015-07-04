@@ -289,7 +289,9 @@
     loadSoundFile(audioCtx, '/guitar.mp3', function(buffer) {
       console.log('Loaded OK.');
 
-      var source = new BufferSource(audioCtx, buffer, signalChain.distortion.input());
+      var source = window.__source = new BufferSource(audioCtx,
+                                                      buffer,
+                                                      signalChain.distortion.input());
 
       document.querySelector('.js-play').addEventListener('click', source.play);
       document.querySelector('.js-stop').addEventListener('click', source.stop);
