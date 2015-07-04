@@ -23,8 +23,20 @@
     </header>
 
     <div class="panel">
-      <button class="js-play">Play</button>
-      <button class="js-stop">Stop</button>
+      <h2>Input Source</h2>
+
+      <ul>
+        <li>
+          <input id="source-1" type="radio" name="source" value="1">
+          <label for="source-1">MP3 (pre-recorded)</label>
+          <button class="js-play">Play</button>
+          <button class="js-stop">Stop</button>
+        </li>
+        <li>
+          <input id="source-2" type="radio" name="source" value="2">
+          <label for="source-2">Line/Mic</label>
+        </li>
+      </ul>
     </div>
 
     <div data-module="distortion">
