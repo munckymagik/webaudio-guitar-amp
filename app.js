@@ -282,7 +282,7 @@
       panner: panner,
       lfo: lfo,
       amplifier: amplifier
-    }
+    };
   }
 
   //
