@@ -211,10 +211,10 @@
   };
 
   //
-  // AudioSource
+  // BufferSource
   //
 
-  function AudioSource(audioCtx, buffer, destination) {
+  function BufferSource(audioCtx, buffer, destination) {
     this.audioCtx = audioCtx;
     this.buffer = buffer;
     this.destination = destination;
@@ -224,7 +224,7 @@
     this.stop = this._stop.bind(this);
   }
 
-  AudioSource.prototype._play = function() {
+  BufferSource.prototype._play = function() {
     console.log('Playing ...');
 
     if (this.source !== undefined) {
@@ -237,7 +237,7 @@
     this.source.start(0);
   };
 
-  AudioSource.prototype._stop = function() {
+  BufferSource.prototype._stop = function() {
     console.log('Stopping.');
     this.source.stop();
     this.source.disconnect();
@@ -289,7 +289,7 @@
     loadSoundFile(audioCtx, '/guitar.mp3', function(buffer) {
       console.log('Loaded OK.');
 
-      var source = new AudioSource(audioCtx, buffer, signalChain.distortion.input());
+      var source = new BufferSource(audioCtx, buffer, signalChain.distortion.input());
 
       document.querySelector('.js-play').addEventListener('click', source.play);
       document.querySelector('.js-stop').addEventListener('click', source.stop);
