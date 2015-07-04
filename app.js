@@ -285,20 +285,11 @@
     };
   }
 
-  //
-  // MAIN ---------------------------------------------------------------------
-  //
-
-  window.addEventListener('load', function() {
-    console.log('On Load.');
-
-    var audioCtx = window.__audioCtx = new AudioContext();
-
+  function loadSoundFileSource(audioCtx, signalChain) {
     loadSoundFile(audioCtx, '/guitar.mp3', function(buffer) {
       console.log('Loaded OK.');
 
-      var signalChain = buildSignalChain(audioCtx),
-          source = new AudioSource(audioCtx, buffer, signalChain.distortion.input());
+      var source = new AudioSource(audioCtx, buffer, signalChain.distortion.input());
 
       document.querySelector('.js-play').addEventListener('click', source.play);
       document.querySelector('.js-stop').addEventListener('click', source.stop);
@@ -307,5 +298,18 @@
       // error
       console.log(arguments);
     });
+  }
+
+  //
+  // MAIN ---------------------------------------------------------------------
+  //
+
+  window.addEventListener('load', function() {
+    console.log('On Load.');
+
+    var audioCtx = window.__audioCtx = new AudioContext();
+    var signalChain = window.__signalChain = buildSignalChain(audioCtx);
+
+    loadSoundFileSource(audioCtx, signalChain);
   });
 })();
