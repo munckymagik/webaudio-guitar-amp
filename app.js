@@ -269,7 +269,7 @@
         source = undefined;
       }
 
-      document.querySelector('.js-play').addEventListener('click', function() {
+      function play() {
         console.log('Playing ...');
 
         if (source !== undefined) {
@@ -280,7 +280,9 @@
         source.buffer = buffer;
         source.connect(signalChain.distortion.input());
         source.start(0);
-      });
+      }
+
+      document.querySelector('.js-play').addEventListener('click', play);
       document.querySelector('.js-stop').addEventListener('click', stop);
     },
     function() {
