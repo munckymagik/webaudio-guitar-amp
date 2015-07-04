@@ -223,6 +223,30 @@
     request.send();
   }
 
+  function buildSignalChain(audioCtx) {
+    var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
+    var compressor = new WebAudioNodeWrapper(makeCompressor(audioCtx));
+    var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
+    var panner = new WebAudioNodeWrapper(audioCtx.createStereoPanner());
+    var lfo = new LFO(audioCtx, panner.input().pan, document.querySelector("[data-module='panner']"));
+    var amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
+
+    distortion.connect(compressor.input());
+    compressor.connect(echo.input());
+    echo.connect(panner.input());
+    panner.connect(amplifier.input());
+    amplifier.connect(audioCtx.destination);
+
+    return {
+      distortion: distortion,
+      compressor: compressor,
+      echo: echo,
+      panner: panner,
+      lfo: lfo,
+      amplifier: amplifier
+    }
+  }
+
   //
   // MAIN ---------------------------------------------------------------------
   //
@@ -235,20 +259,8 @@
     loadSoundFile(audioCtx, '/guitar.mp3', function(buffer) {
       console.log('Loaded OK.');
 
-      var source;
-
-      var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
-      var compressor = new WebAudioNodeWrapper(makeCompressor(audioCtx));
-      var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
-      var amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
-      var panner = new WebAudioNodeWrapper(audioCtx.createStereoPanner());
-      var lfo = new LFO(audioCtx, panner.input().pan, document.querySelector("[data-module='panner']"));
-
-      distortion.connect(compressor.input());
-      compressor.connect(echo.input());
-      echo.connect(panner.input());
-      panner.connect(amplifier.input());
-      amplifier.connect(audioCtx.destination);
+      var signalChain = buildSignalChain(audioCtx),
+          source;
 
       function stop() {
         console.log('Stopping.');
@@ -266,7 +278,7 @@
 
         source = audioCtx.createBufferSource();
         source.buffer = buffer;
-        source.connect(distortion.input());
+        source.connect(signalChain.distortion.input());
         source.start(0);
       });
       document.querySelector('.js-stop').addEventListener('click', stop);
