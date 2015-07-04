@@ -210,6 +210,44 @@
     return this.node;
   };
 
+  //
+  // AudioSource
+  //
+
+  function AudioSource(audioCtx, buffer, destination) {
+    this.audioCtx = audioCtx;
+    this.buffer = buffer;
+    this.destination = destination;
+    this.source = undefined;
+
+    this.play = this._play.bind(this);
+    this.stop = this._stop.bind(this);
+  }
+
+  AudioSource.prototype._play = function() {
+    console.log('Playing ...');
+
+    if (this.source !== undefined) {
+      stop();
+    }
+
+    this.source = this.audioCtx.createBufferSource();
+    this.source.buffer = this.buffer;
+    this.source.connect(this.destination);
+    this.source.start(0);
+  };
+
+  AudioSource.prototype._stop = function() {
+    console.log('Stopping.');
+    this.source.stop();
+    this.source.disconnect();
+    this.source = undefined;
+  };
+
+  //
+  // Functions
+  //
+
   // From http://www.html5rocks.com/en/tutorials/webaudio/intro/
   function loadSoundFile(context, url, onSuccess, onError) {
     var request = new XMLHttpRequest();
@@ -260,30 +298,10 @@
       console.log('Loaded OK.');
 
       var signalChain = buildSignalChain(audioCtx),
-          source;
+          source = new AudioSource(audioCtx, buffer, signalChain.distortion.input());
 
-      function stop() {
-        console.log('Stopping.');
-        source.stop();
-        source.disconnect();
-        source = undefined;
-      }
-
-      function play() {
-        console.log('Playing ...');
-
-        if (source !== undefined) {
-          stop();
-        }
-
-        source = audioCtx.createBufferSource();
-        source.buffer = buffer;
-        source.connect(signalChain.distortion.input());
-        source.start(0);
-      }
-
-      document.querySelector('.js-play').addEventListener('click', play);
-      document.querySelector('.js-stop').addEventListener('click', stop);
+      document.querySelector('.js-play').addEventListener('click', source.play);
+      document.querySelector('.js-stop').addEventListener('click', source.stop);
     },
     function() {
       // error
