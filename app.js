@@ -302,6 +302,30 @@
     });
   }
 
+  function loadUserMediaSource(audioCtx, signalChain) {
+    var options = {
+      audio: {
+        optional: [
+          { echoCancellation: false }
+        ]
+      }
+    };
+
+    navigator.getUserMedia(
+      options,
+      function(stream) {
+        console.log('Loading stream.');
+
+        var source = window.__source = audioCtx.createMediaStreamSource(stream);
+        source.connect(signalChain.distortion.input());
+      },
+      function() {
+        // error
+        console.log(arguments);
+      }
+    );
+  }
+
   //
   // MAIN ---------------------------------------------------------------------
   //
@@ -313,5 +337,6 @@
     var signalChain = window.__signalChain = buildSignalChain(audioCtx);
 
     loadSoundFileSource(audioCtx, signalChain);
+    //loadUserMediaSource(audioCtx, signalChain);
   });
 })();
