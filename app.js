@@ -249,16 +249,19 @@
   //
 
   // From http://www.html5rocks.com/en/tutorials/webaudio/intro/
-  function loadSoundFile(context, url, onSuccess, onError) {
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.responseType = 'arraybuffer';
+  function loadSoundFile(context, url) {
+    return new Promise(function(resolve, fail) {
+      var request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.responseType = 'arraybuffer';
 
-    // Decode asynchronously
-    request.onload = function() {
-      context.decodeAudioData(request.response, onSuccess, onError);
-    };
-    request.send();
+      // Decode asynchronously
+      request.onload = function() {
+        context.decodeAudioData(request.response, resolve, fail);
+      };
+
+      request.send();
+    });
   }
 
   function buildSignalChain(audioCtx) {
@@ -286,19 +289,15 @@
   }
 
   function loadSoundFileSource(audioCtx, signalChain) {
-    loadSoundFile(audioCtx, '/guitar.mp3', function(buffer) {
+    return loadSoundFile(audioCtx, '/guitar.mp3').then(function(buffer) {
       console.log('Loaded OK.');
+      var source = new BufferSource(audioCtx, buffer, signalChain.distortion.input());
 
-      var source = window.__source = new BufferSource(audioCtx,
-                                                      buffer,
-                                                      signalChain.distortion.input());
-
+      console.log('Enabling play/stop');
       document.querySelector('.js-play').addEventListener('click', source.play);
       document.querySelector('.js-stop').addEventListener('click', source.stop);
-    },
-    function() {
-      // error
-      console.log(arguments);
+
+      return source;
     });
   }
 
@@ -311,19 +310,22 @@
       }
     };
 
-    navigator.getUserMedia(
-      options,
-      function(stream) {
-        console.log('Loading stream.');
+    return new Promise(function(resolve, fail) {
+      navigator.getUserMedia(
+        options,
+        function(stream) {
+          console.log('Loading stream.');
 
-        var source = window.__source = audioCtx.createMediaStreamSource(stream);
-        source.connect(signalChain.distortion.input());
-      },
-      function() {
-        // error
-        console.log(arguments);
-      }
-    );
+          var source = audioCtx.createMediaStreamSource(stream);
+          source.connect(signalChain.distortion.input());
+
+          resolve(source);
+        },
+        function() {
+          fail(arguments);
+        }
+      );
+    });
   }
 
   //
@@ -336,7 +338,14 @@
     var audioCtx = window.__audioCtx = new AudioContext();
     var signalChain = window.__signalChain = buildSignalChain(audioCtx);
 
-    loadSoundFileSource(audioCtx, signalChain);
-    //loadUserMediaSource(audioCtx, signalChain);
+    window.__soundFilePromise = loadSoundFileSource(audioCtx, signalChain);
+    window.__guitarInputPromise = loadUserMediaSource(audioCtx, signalChain);
+
+    Promise.all([window.__soundFilePromise, window.__guitarInputPromise], function() {
+      console.log('success');
+      console.log(arguments);
+    }).catch(function(error) {
+      console.log('Error', error);
+    });
   });
 })();
