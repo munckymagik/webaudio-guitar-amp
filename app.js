@@ -227,7 +227,7 @@
     console.log('Playing ...');
 
     if (this.source !== undefined) {
-      stop();
+      this.stop();
     }
 
     this.source = this.audioCtx.createBufferSource();
@@ -238,6 +238,11 @@
 
   BufferSource.prototype._stop = function() {
     console.log('Stopping.');
+
+    if (this.source === undefined) {
+      return;
+    }
+
     this.source.stop();
     this.source.disconnect();
     this.source = undefined;
