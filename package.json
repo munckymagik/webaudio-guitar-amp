@@ -1,0 +1,19 @@
+{
+  "name": "webaudio-guitar-amp",
+  "version": "1.0.0",
+  "description": "A virtual guitar amp that runs in the browser",
+  "main": "app.js",
+  "scripts": {
+    "test": "open index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/munckymagik/webaudio-guitar-amp.git"
+  },
+  "author": "Dan Munckton <dangit@munckton.co.uk>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/munckymagik/webaudio-guitar-amp/issues"
+  },
+  "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme"
+}
