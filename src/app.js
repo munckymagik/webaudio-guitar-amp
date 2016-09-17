@@ -5,8 +5,8 @@ import loadUserMediaSource from './sources/loadUserMediaSource'
 function app() {
   console.log('Starting application.');
 
-  var audioCtx = window.__audioCtx = new AudioContext();
-  var signalChain = window.__signalChain = buildSignalChain(audioCtx);
+  const audioCtx = window.__audioCtx = new AudioContext();
+  const signalChain = window.__signalChain = buildSignalChain(audioCtx);
 
   window.__soundFilePromise = loadSoundFileSource(audioCtx, signalChain);
   window.__guitarInputPromise = loadUserMediaSource(audioCtx, signalChain);

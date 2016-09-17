@@ -6,12 +6,12 @@ import WebAudioNodeWrapper from './modules/WebAudioNodeWrapper'
 import makeCompressor from './modules/Compressor'
 
 function buildSignalChain(audioCtx) {
-  var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
-  var compressor = new WebAudioNodeWrapper(makeCompressor(audioCtx));
-  var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
-  var panner = new WebAudioNodeWrapper(audioCtx.createStereoPanner());
-  var lfo = new LFO(audioCtx, panner.input().pan, document.querySelector("[data-module='panner']"));
-  var amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
+  const distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
+  const compressor = new WebAudioNodeWrapper(makeCompressor(audioCtx));
+  const echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
+  const panner = new WebAudioNodeWrapper(audioCtx.createStereoPanner());
+  const lfo = new LFO(audioCtx, panner.input().pan, document.querySelector("[data-module='panner']"));
+  const amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
 
   distortion.connect(compressor.input());
   compressor.connect(echo.input());

@@ -1,5 +1,5 @@
 function LFO(audioCtx, paramToModulate, uiElement) {
-  var self = this;
+  const self = this;
 
   this.speedCtrl = uiElement.querySelector('.js-lfo-speed');
   this.widthCtrl = uiElement.querySelector('.js-lfo-gain');

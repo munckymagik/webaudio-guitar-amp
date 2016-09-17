@@ -1,6 +1,6 @@
 // Based on code from: https://developer.mozilla.org/en-US/docs/Web/API/DynamicsCompressorNode
 function makeCompressor(audioCtx) {
-  var compressor = audioCtx.createDynamicsCompressor();
+  const compressor = audioCtx.createDynamicsCompressor();
   compressor.threshold.value = -50;
   compressor.knee.value = 40;
   compressor.ratio.value = 12;

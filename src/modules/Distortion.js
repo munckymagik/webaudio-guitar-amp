@@ -1,11 +1,11 @@
 // Taken from: https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode
 function makeDistortionCurve(amount) {
-  var k = typeof amount === 'number' ? amount : 50,
-      n_samples = 44100,
-      curve = new Float32Array(n_samples),
-      deg = Math.PI / 180,
-      i = 0,
-      x;
+  const k = typeof amount === 'number' ? amount : 50;
+  const n_samples = 44100;
+  const curve = new Float32Array(n_samples);
+  const deg = Math.PI / 180;
+  let i = 0;
+  let x;
 
   for ( ; i < n_samples; ++i ) {
     x = i * 2 / n_samples - 1;
@@ -16,7 +16,7 @@ function makeDistortionCurve(amount) {
 }
 
 function Distortion(audioCtx, uiElement) {
-  var self = this;
+  const self = this;
 
   this.amountCtrl = uiElement.querySelector('.js-distortion-amount');
   this.toneCtrl = uiElement.querySelector('.js-distortion-tone');

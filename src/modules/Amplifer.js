@@ -1,5 +1,5 @@
 function Amplifer(audioCtx, uiElement) {
-  var self = this;
+  const self = this;
 
   this.gain = audioCtx.createGain();
   this.volumeCtrl = uiElement.querySelector('.js-amplifier-volume');
