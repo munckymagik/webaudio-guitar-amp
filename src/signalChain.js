@@ -20,12 +20,12 @@ function buildSignalChain(audioCtx) {
   amplifier.connect(audioCtx.destination);
 
   return {
-    distortion: distortion,
-    compressor: compressor,
-    echo: echo,
-    panner: panner,
-    lfo: lfo,
-    amplifier: amplifier
+    distortion,
+    compressor,
+    echo,
+    panner,
+    lfo,
+    amplifier
   };
 }
 
