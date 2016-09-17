@@ -2,16 +2,18 @@
 // NodeWrapper (for the sake of a consistent interface when chaining stuff together)
 //
 
-function WebAudioNodeWrapper(webaudioNode) {
-  this.node = webaudioNode;
+class WebAudioNodeWrapper {
+  constructor(webaudioNode) {
+    this.node = webaudioNode;
+  }
+
+  connect(node) {
+    this.node.connect(node);
+  }
+
+  input() {
+    return this.node;
+  }
 }
-
-WebAudioNodeWrapper.prototype.connect = function(node) {
-  this.node.connect(node);
-};
-
-WebAudioNodeWrapper.prototype.input = function() {
-  return this.node;
-};
 
 export default WebAudioNodeWrapper

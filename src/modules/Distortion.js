@@ -15,36 +15,38 @@ function makeDistortionCurve(amount) {
   return curve;
 }
 
-function Distortion(audioCtx, uiElement) {
-  const self = this;
+class Distortion {
+  constructor(audioCtx, uiElement) {
+    const self = this;
 
-  this.amountCtrl = uiElement.querySelector('.js-distortion-amount');
-  this.toneCtrl = uiElement.querySelector('.js-distortion-tone');
+    this.amountCtrl = uiElement.querySelector('.js-distortion-amount');
+    this.toneCtrl = uiElement.querySelector('.js-distortion-tone');
 
-  this.distortion = audioCtx.createWaveShaper();
-  this.distortion.curve = makeDistortionCurve(parseInt(this.amountCtrl.value));
-  this.distortion.oversample = '4x';
+    this.distortion = audioCtx.createWaveShaper();
+    this.distortion.curve = makeDistortionCurve(parseInt(this.amountCtrl.value));
+    this.distortion.oversample = '4x';
 
-  this.lowPass = audioCtx.createBiquadFilter();
-  this.lowPass.type = 'lowpass';
-  this.lowPass.frequency.value = parseInt(this.toneCtrl.value);
+    this.lowPass = audioCtx.createBiquadFilter();
+    this.lowPass.type = 'lowpass';
+    this.lowPass.frequency.value = parseInt(this.toneCtrl.value);
 
-  this.distortion.connect(this.lowPass);
+    this.distortion.connect(this.lowPass);
 
-  this.amountCtrl.addEventListener('change', function() {
-    self.distortion.curve = makeDistortionCurve(parseInt(self.amountCtrl.value));
-  });
-  this.toneCtrl.addEventListener('input', function() {
-    self.lowPass.frequency.value = parseInt(self.toneCtrl.value);
-  });
+    this.amountCtrl.addEventListener('change', function() {
+      self.distortion.curve = makeDistortionCurve(parseInt(self.amountCtrl.value));
+    });
+    this.toneCtrl.addEventListener('input', function() {
+      self.lowPass.frequency.value = parseInt(self.toneCtrl.value);
+    });
+  }
+
+  connect(node) {
+    this.lowPass.connect(node);
+  }
+
+  input() {
+    return this.distortion;
+  }
 }
-
-Distortion.prototype.connect = function(node) {
-  this.lowPass.connect(node);
-};
-
-Distortion.prototype.input = function() {
-  return this.distortion;
-};
 
 export default Distortion
