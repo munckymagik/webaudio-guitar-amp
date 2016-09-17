@@ -6,7 +6,7 @@ class Amplifer {
     this.volumeCtrl = uiElement.querySelector('.js-amplifier-volume');
 
     self.setValue(self.volumeCtrl.value);
-    this.volumeCtrl.addEventListener('input', function() {
+    this.volumeCtrl.addEventListener('input', () => {
       self.setValue(self.volumeCtrl.value);
     });
   }

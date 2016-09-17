@@ -25,13 +25,13 @@ class SlapBackEcho {
     feedback.connect(delay);
     wetLevel.connect(this.output);
 
-    this.uiWetControl.addEventListener('input', function() {
+    this.uiWetControl.addEventListener('input', () => {
       wetLevel.gain.value = self.uiWetControl.value;
     });
-    this.uiFeedbackControl.addEventListener('input', function() {
+    this.uiFeedbackControl.addEventListener('input', () => {
       feedback.gain.value = parseFloat(self.uiFeedbackControl.value);
     });
-    this.uiDelayControl.addEventListener('input', function() {
+    this.uiDelayControl.addEventListener('input', () => {
       delay.delayTime.value = parseFloat(self.uiDelayControl.value);
     });
   }

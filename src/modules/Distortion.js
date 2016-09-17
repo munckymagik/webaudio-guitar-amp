@@ -32,10 +32,10 @@ class Distortion {
 
     this.distortion.connect(this.lowPass);
 
-    this.amountCtrl.addEventListener('change', function() {
+    this.amountCtrl.addEventListener('change', () => {
       self.distortion.curve = makeDistortionCurve(parseInt(self.amountCtrl.value));
     });
-    this.toneCtrl.addEventListener('input', function() {
+    this.toneCtrl.addEventListener('input', () => {
       self.lowPass.frequency.value = parseInt(self.toneCtrl.value);
     });
   }

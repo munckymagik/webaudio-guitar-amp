@@ -14,7 +14,7 @@ function app() {
   Promise.all([window.__soundFilePromise, window.__guitarInputPromise], function() {
     console.log('All sources loaded');
     console.log(arguments);
-  }).catch(function(error) {
+  }).catch(error => {
     console.log('Error source loading failed', error);
   });
 };

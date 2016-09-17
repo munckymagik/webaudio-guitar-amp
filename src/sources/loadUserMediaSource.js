@@ -9,10 +9,10 @@ function loadUserMediaSource(audioCtx, signalChain) {
     }
   };
 
-  return new Promise(function(resolve, fail) {
+  return new Promise((resolve, fail) => {
     navigator.getUserMedia(
       options,
-      function(stream) {
+      stream => {
         console.log('Loading stream.');
 
         const source = audioCtx.createMediaStreamSource(stream);
