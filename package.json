@@ -4,6 +4,7 @@
   "description": "A virtual guitar amp that runs in the browser",
   "main": "app.js",
   "scripts": {
+    "build": "webpack",
     "test": "open index.html"
   },
   "repository": {
