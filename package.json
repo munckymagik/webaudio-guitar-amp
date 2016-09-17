@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/munckymagik/webaudio-guitar-amp/issues"
   },
-  "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme"
+  "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme",
+  "devDependencies": {
+    "webpack": "^1.13.2"
+  }
 }
