@@ -22,6 +22,23 @@
       </a>
     </header>
 
+    <div class="panel">
+      <h2>Input Source</h2>
+
+      <ul>
+        <li>
+          <input id="source-1" type="radio" name="source" value="1">
+          <label for="source-1">MP3 (pre-recorded)</label>
+          <button class="js-play">Play</button>
+          <button class="js-stop">Stop</button>
+        </li>
+        <li>
+          <input id="source-2" type="radio" name="source" value="2">
+          <label for="source-2">Line/Mic</label>
+        </li>
+      </ul>
+    </div>
+
     <div data-module="distortion">
       <h2>Distortion</h2>
       <label for="distortion__amount">Amount</label>
@@ -59,7 +76,7 @@
       <h2>Amplifier</h2>
       <label for="amplifier__volume">Volume</label>
       <input type="range" id="amplifier__volume" class="js-amplifier-volume"
-             min="0.0" max="4.0" step="0.01" value="0.0">
+             min="0.0" max="4.0" step="0.01" value="0.5">
     </div>
   </body>
 </html>

@@ -187,7 +187,6 @@
     compressor.threshold.value = -50;
     compressor.knee.value = 40;
     compressor.ratio.value = 12;
-    compressor.reduction.value = -20;
     compressor.attack.value = 0.25;
     compressor.release.value = 0.25;
 
@@ -211,6 +210,129 @@
   };
 
   //
+  // BufferSource
+  //
+
+  function BufferSource(audioCtx, buffer, destination) {
+    this.audioCtx = audioCtx;
+    this.buffer = buffer;
+    this.destination = destination;
+    this.source = undefined;
+
+    this.play = this._play.bind(this);
+    this.stop = this._stop.bind(this);
+  }
+
+  BufferSource.prototype._play = function() {
+    console.log('Playing ...');
+
+    if (this.source !== undefined) {
+      this.stop();
+    }
+
+    this.source = this.audioCtx.createBufferSource();
+    this.source.buffer = this.buffer;
+    this.source.connect(this.destination);
+    this.source.start(0);
+  };
+
+  BufferSource.prototype._stop = function() {
+    console.log('Stopping.');
+
+    if (this.source === undefined) {
+      return;
+    }
+
+    this.source.stop();
+    this.source.disconnect();
+    this.source = undefined;
+  };
+
+  //
+  // Functions
+  //
+
+  // From http://www.html5rocks.com/en/tutorials/webaudio/intro/
+  function loadSoundFile(context, url) {
+    return new Promise(function(resolve, fail) {
+      var request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.responseType = 'arraybuffer';
+
+      // Decode asynchronously
+      request.onload = function() {
+        context.decodeAudioData(request.response, resolve, fail);
+      };
+
+      request.send();
+    });
+  }
+
+  function buildSignalChain(audioCtx) {
+    var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
+    var compressor = new WebAudioNodeWrapper(makeCompressor(audioCtx));
+    var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
+    var panner = new WebAudioNodeWrapper(audioCtx.createStereoPanner());
+    var lfo = new LFO(audioCtx, panner.input().pan, document.querySelector("[data-module='panner']"));
+    var amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
+
+    distortion.connect(compressor.input());
+    compressor.connect(echo.input());
+    echo.connect(panner.input());
+    panner.connect(amplifier.input());
+    amplifier.connect(audioCtx.destination);
+
+    return {
+      distortion: distortion,
+      compressor: compressor,
+      echo: echo,
+      panner: panner,
+      lfo: lfo,
+      amplifier: amplifier
+    };
+  }
+
+  function loadSoundFileSource(audioCtx, signalChain) {
+    return loadSoundFile(audioCtx, '/guitar.mp3').then(function(buffer) {
+      console.log('Loaded OK.');
+      var source = new BufferSource(audioCtx, buffer, signalChain.distortion.input());
+
+      console.log('Enabling play/stop');
+      document.querySelector('.js-play').addEventListener('click', source.play);
+      document.querySelector('.js-stop').addEventListener('click', source.stop);
+
+      return source;
+    });
+  }
+
+  function loadUserMediaSource(audioCtx, signalChain) {
+    var options = {
+      audio: {
+        optional: [
+          { echoCancellation: false }
+        ]
+      }
+    };
+
+    return new Promise(function(resolve, fail) {
+      navigator.getUserMedia(
+        options,
+        function(stream) {
+          console.log('Loading stream.');
+
+          var source = audioCtx.createMediaStreamSource(stream);
+          source.connect(signalChain.distortion.input());
+
+          resolve(source);
+        },
+        function() {
+          fail(arguments);
+        }
+      );
+    });
+  }
+
+  //
   // MAIN ---------------------------------------------------------------------
   //
 
@@ -218,28 +340,16 @@
     console.log('On Load.');
 
     var audioCtx = window.__audioCtx = new AudioContext();
+    var signalChain = window.__signalChain = buildSignalChain(audioCtx);
 
-    navigator.getUserMedia({ audio: { optional: [ { echoCancellation: false } ] } },
-      function(stream) {
-        console.log('stream.');
-        var source = window.__source = audioCtx.createMediaStreamSource(stream);
-        var distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"));
-        var compressor = new WebAudioNodeWrapper(makeCompressor(audioCtx));
-        var echo = new SlapBackEcho(audioCtx, document.querySelector("[data-module='echo']"));
-        var amplifier = new Amplifer(audioCtx, document.querySelector("[data-module='amplifier']"));
-        var panner = new WebAudioNodeWrapper(audioCtx.createStereoPanner());
-        var lfo = new LFO(audioCtx, panner.input().pan, document.querySelector("[data-module='panner']"));
+    window.__soundFilePromise = loadSoundFileSource(audioCtx, signalChain);
+    window.__guitarInputPromise = loadUserMediaSource(audioCtx, signalChain);
 
-        source.connect(distortion.input());
-        distortion.connect(compressor.input());
-        compressor.connect(echo.input());
-        echo.connect(panner.input());
-        panner.connect(amplifier.input());
-        amplifier.connect(audioCtx.destination);
-      },
-      function() {
-        // error
-        console.log(arguments);
-      });
+    Promise.all([window.__soundFilePromise, window.__guitarInputPromise], function() {
+      console.log('success');
+      console.log(arguments);
+    }).catch(function(error) {
+      console.log('Error', error);
+    });
   });
 })();
