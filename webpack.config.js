@@ -1,4 +1,6 @@
 module.exports = {
+  debug: true,
+  devtool: 'source-map',
   entry: './src/main.js',
   output: {
     path: __dirname,
