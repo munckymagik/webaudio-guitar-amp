@@ -20,8 +20,8 @@ function loadUserMediaSource(audioCtx, signalChain) {
 
         resolve(source);
       },
-      function() {
-        fail(arguments);
+      (...args) => {
+        fail(args);
       }
     );
   });

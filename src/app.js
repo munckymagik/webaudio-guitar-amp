@@ -11,9 +11,9 @@ function app() {
   window.__soundFilePromise = loadSoundFileSource(audioCtx, signalChain);
   window.__guitarInputPromise = loadUserMediaSource(audioCtx, signalChain);
 
-  Promise.all([window.__soundFilePromise, window.__guitarInputPromise], function() {
+  Promise.all([window.__soundFilePromise, window.__guitarInputPromise], (...args) => {
     console.log('All sources loaded');
-    console.log(arguments);
+    console.log(args);
   }).catch(error => {
     console.log('Error source loading failed', error);
   });
