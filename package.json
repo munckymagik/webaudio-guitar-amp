@@ -4,6 +4,7 @@
   "description": "A virtual guitar amp that runs in the browser",
   "main": "app.js",
   "scripts": {
+    "build": "rollup -c",
     "test": "open index.html"
   },
   "repository": {
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/munckymagik/webaudio-guitar-amp/issues"
   },
-  "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme"
+  "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme",
+  "devDependencies": {
+    "rollup": "0.35.11"
+  }
 }
