@@ -52,10 +52,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var whatev = function whatev() {
-	  return true;
-	};
-	
 	window.addEventListener('load', _app2.default);
 
 /***/ },
@@ -92,8 +88,12 @@
 	  window.__guitarInputPromise = (0, _loadUserMediaSource2.default)(audioCtx, signalChain);
 	
 	  Promise.all([window.__soundFilePromise, window.__guitarInputPromise], function () {
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
 	    console.log('All sources loaded');
-	    console.log(arguments);
+	    console.log(args);
 	  }).catch(function (error) {
 	    console.log('Error source loading failed', error);
 	  });
@@ -172,29 +172,45 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	function Amplifer(audioCtx, uiElement) {
-	  var self = this;
 	
-	  this.gain = audioCtx.createGain();
-	  this.volumeCtrl = uiElement.querySelector('.js-amplifier-volume');
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	  self.setValue(self.volumeCtrl.value);
-	  this.volumeCtrl.addEventListener('input', function () {
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Amplifer = function () {
+	  function Amplifer(audioCtx, uiElement) {
+	    _classCallCheck(this, Amplifer);
+	
+	    var self = this;
+	
+	    this.gain = audioCtx.createGain();
+	    this.volumeCtrl = uiElement.querySelector('.js-amplifier-volume');
+	
 	    self.setValue(self.volumeCtrl.value);
-	  });
-	}
+	    this.volumeCtrl.addEventListener('input', function () {
+	      self.setValue(self.volumeCtrl.value);
+	    });
+	  }
 	
-	Amplifer.prototype.connect = function (node) {
-	  this.gain.connect(node);
-	};
+	  _createClass(Amplifer, [{
+	    key: 'connect',
+	    value: function connect(node) {
+	      this.gain.connect(node);
+	    }
+	  }, {
+	    key: 'setValue',
+	    value: function setValue(gainValue) {
+	      this.gain.gain.value = gainValue;
+	    }
+	  }, {
+	    key: 'input',
+	    value: function input() {
+	      return this.gain;
+	    }
+	  }]);
 	
-	Amplifer.prototype.setValue = function (gainValue) {
-	  this.gain.gain.value = gainValue;
-	};
-	
-	Amplifer.prototype.input = function () {
-	  return this.gain;
-	};
+	  return Amplifer;
+	}();
 	
 	exports.default = Amplifer;
 
@@ -207,14 +223,19 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
 	// Taken from: https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode
 	function makeDistortionCurve(amount) {
-	  var k = typeof amount === 'number' ? amount : 50,
-	      n_samples = 44100,
-	      curve = new Float32Array(n_samples),
-	      deg = Math.PI / 180,
-	      i = 0,
-	      x;
+	  var k = typeof amount === 'number' ? amount : 50;
+	  var n_samples = 44100;
+	  var curve = new Float32Array(n_samples);
+	  var deg = Math.PI / 180;
+	  var i = 0;
+	  var x = void 0;
 	
 	  for (; i < n_samples; ++i) {
 	    x = i * 2 / n_samples - 1;
@@ -224,37 +245,47 @@
 	  return curve;
 	}
 	
-	function Distortion(audioCtx, uiElement) {
-	  var self = this;
+	var Distortion = function () {
+	  function Distortion(audioCtx, uiElement) {
+	    _classCallCheck(this, Distortion);
 	
-	  this.amountCtrl = uiElement.querySelector('.js-distortion-amount');
-	  this.toneCtrl = uiElement.querySelector('.js-distortion-tone');
+	    var self = this;
 	
-	  this.distortion = audioCtx.createWaveShaper();
-	  this.distortion.curve = makeDistortionCurve(parseInt(this.amountCtrl.value));
-	  this.distortion.oversample = '4x';
+	    this.amountCtrl = uiElement.querySelector('.js-distortion-amount');
+	    this.toneCtrl = uiElement.querySelector('.js-distortion-tone');
 	
-	  this.lowPass = audioCtx.createBiquadFilter();
-	  this.lowPass.type = 'lowpass';
-	  this.lowPass.frequency.value = parseInt(this.toneCtrl.value);
+	    this.distortion = audioCtx.createWaveShaper();
+	    this.distortion.curve = makeDistortionCurve(parseInt(this.amountCtrl.value));
+	    this.distortion.oversample = '4x';
 	
-	  this.distortion.connect(this.lowPass);
+	    this.lowPass = audioCtx.createBiquadFilter();
+	    this.lowPass.type = 'lowpass';
+	    this.lowPass.frequency.value = parseInt(this.toneCtrl.value);
 	
-	  this.amountCtrl.addEventListener('change', function () {
-	    self.distortion.curve = makeDistortionCurve(parseInt(self.amountCtrl.value));
-	  });
-	  this.toneCtrl.addEventListener('input', function () {
-	    self.lowPass.frequency.value = parseInt(self.toneCtrl.value);
-	  });
-	}
+	    this.distortion.connect(this.lowPass);
 	
-	Distortion.prototype.connect = function (node) {
-	  this.lowPass.connect(node);
-	};
+	    this.amountCtrl.addEventListener('change', function () {
+	      self.distortion.curve = makeDistortionCurve(parseInt(self.amountCtrl.value));
+	    });
+	    this.toneCtrl.addEventListener('input', function () {
+	      self.lowPass.frequency.value = parseInt(self.toneCtrl.value);
+	    });
+	  }
 	
-	Distortion.prototype.input = function () {
-	  return this.distortion;
-	};
+	  _createClass(Distortion, [{
+	    key: 'connect',
+	    value: function connect(node) {
+	      this.lowPass.connect(node);
+	    }
+	  }, {
+	    key: 'input',
+	    value: function input() {
+	      return this.distortion;
+	    }
+	  }]);
+	
+	  return Distortion;
+	}();
 	
 	exports.default = Distortion;
 
@@ -304,57 +335,73 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
 	// http://www.html5rocks.com/en/tutorials/casestudies/jamwithchrome-audio/
 	
-	function SlapBackEcho(audioCtx, uiElement) {
-	  this._input = audioCtx.createGain();
-	  this.output = audioCtx.createGain();
+	var SlapBackEcho = function () {
+	  function SlapBackEcho(audioCtx, uiElement) {
+	    _classCallCheck(this, SlapBackEcho);
 	
-	  var self = this,
-	      delay = audioCtx.createDelay(),
-	      feedback = audioCtx.createGain(),
-	      wetLevel = audioCtx.createGain();
+	    this._input = audioCtx.createGain();
+	    this.output = audioCtx.createGain();
 	
-	  this.uiWetControl = uiElement.querySelector('.js-echo-mix');
-	  this.uiFeedbackControl = uiElement.querySelector('.js-echo-feedback');
-	  this.uiDelayControl = uiElement.querySelector('.js-echo-delay');
+	    var self = this,
+	        delay = audioCtx.createDelay(),
+	        feedback = audioCtx.createGain(),
+	        wetLevel = audioCtx.createGain();
 	
-	  this._input.gain.value = 1.0;
-	  this.output.gain.value = 1.0;
-	  delay.delayTime.value = parseFloat(this.uiDelayControl.value);
-	  feedback.gain.value = parseFloat(this.uiFeedbackControl.value);
-	  wetLevel.gain.value = this.uiWetControl.value;
+	    this.uiWetControl = uiElement.querySelector('.js-echo-mix');
+	    this.uiFeedbackControl = uiElement.querySelector('.js-echo-feedback');
+	    this.uiDelayControl = uiElement.querySelector('.js-echo-delay');
 	
-	  this._input.connect(delay);
-	  this._input.connect(this.output);
+	    this._input.gain.value = 1.0;
+	    this.output.gain.value = 1.0;
+	    delay.delayTime.value = parseFloat(this.uiDelayControl.value);
+	    feedback.gain.value = parseFloat(this.uiFeedbackControl.value);
+	    wetLevel.gain.value = this.uiWetControl.value;
 	
-	  delay.connect(feedback);
-	  delay.connect(wetLevel);
-	  feedback.connect(delay);
-	  wetLevel.connect(this.output);
+	    this._input.connect(delay);
+	    this._input.connect(this.output);
 	
-	  this.uiWetControl.addEventListener('input', function () {
-	    wetLevel.gain.value = self.uiWetControl.value;
-	  });
-	  this.uiFeedbackControl.addEventListener('input', function () {
-	    feedback.gain.value = parseFloat(self.uiFeedbackControl.value);
-	  });
-	  this.uiDelayControl.addEventListener('input', function () {
-	    delay.delayTime.value = parseFloat(self.uiDelayControl.value);
-	  });
-	}
+	    delay.connect(feedback);
+	    delay.connect(wetLevel);
+	    feedback.connect(delay);
+	    wetLevel.connect(this.output);
 	
-	SlapBackEcho.prototype.connect = function (node) {
-	  this.output.connect(node);
-	};
+	    this.uiWetControl.addEventListener('input', function () {
+	      wetLevel.gain.value = self.uiWetControl.value;
+	    });
+	    this.uiFeedbackControl.addEventListener('input', function () {
+	      feedback.gain.value = parseFloat(self.uiFeedbackControl.value);
+	    });
+	    this.uiDelayControl.addEventListener('input', function () {
+	      delay.delayTime.value = parseFloat(self.uiDelayControl.value);
+	    });
+	  }
 	
-	SlapBackEcho.prototype.setValue = function (gainValue) {
-	  this.gain.gain.value = gainValue;
-	};
+	  _createClass(SlapBackEcho, [{
+	    key: 'connect',
+	    value: function connect(node) {
+	      this.output.connect(node);
+	    }
+	  }, {
+	    key: 'setValue',
+	    value: function setValue(gainValue) {
+	      this.gain.gain.value = gainValue;
+	    }
+	  }, {
+	    key: 'input',
+	    value: function input() {
+	      return this._input;
+	    }
+	  }]);
 	
-	SlapBackEcho.prototype.input = function () {
-	  return this._input;
-	};
+	  return SlapBackEcho;
+	}();
 	
 	exports.default = SlapBackEcho;
 
@@ -367,21 +414,36 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
 	//
 	// NodeWrapper (for the sake of a consistent interface when chaining stuff together)
 	//
 	
-	function WebAudioNodeWrapper(webaudioNode) {
-	  this.node = webaudioNode;
-	}
+	var WebAudioNodeWrapper = function () {
+	  function WebAudioNodeWrapper(webaudioNode) {
+	    _classCallCheck(this, WebAudioNodeWrapper);
 	
-	WebAudioNodeWrapper.prototype.connect = function (node) {
-	  this.node.connect(node);
-	};
+	    this.node = webaudioNode;
+	  }
 	
-	WebAudioNodeWrapper.prototype.input = function () {
-	  return this.node;
-	};
+	  _createClass(WebAudioNodeWrapper, [{
+	    key: "connect",
+	    value: function connect(node) {
+	      this.node.connect(node);
+	    }
+	  }, {
+	    key: "input",
+	    value: function input() {
+	      return this.node;
+	    }
+	  }]);
+	
+	  return WebAudioNodeWrapper;
+	}();
 	
 	exports.default = WebAudioNodeWrapper;
 
@@ -464,40 +526,55 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	function BufferSource(audioCtx, buffer, destination) {
-	  this.audioCtx = audioCtx;
-	  this.buffer = buffer;
-	  this.destination = destination;
-	  this.source = undefined;
 	
-	  this.play = this._play.bind(this);
-	  this.stop = this._stop.bind(this);
-	}
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	BufferSource.prototype._play = function () {
-	  console.log('Playing ...');
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	  if (this.source !== undefined) {
-	    this.stop();
+	var BufferSource = function () {
+	  function BufferSource(audioCtx, buffer, destination) {
+	    _classCallCheck(this, BufferSource);
+	
+	    this.audioCtx = audioCtx;
+	    this.buffer = buffer;
+	    this.destination = destination;
+	    this.source = undefined;
+	
+	    this.play = this._play.bind(this);
+	    this.stop = this._stop.bind(this);
 	  }
 	
-	  this.source = this.audioCtx.createBufferSource();
-	  this.source.buffer = this.buffer;
-	  this.source.connect(this.destination);
-	  this.source.start(0);
-	};
+	  _createClass(BufferSource, [{
+	    key: '_play',
+	    value: function _play() {
+	      console.log('Playing ...');
 	
-	BufferSource.prototype._stop = function () {
-	  console.log('Stopping.');
+	      if (this.source !== undefined) {
+	        this.stop();
+	      }
 	
-	  if (this.source === undefined) {
-	    return;
-	  }
+	      this.source = this.audioCtx.createBufferSource();
+	      this.source.buffer = this.buffer;
+	      this.source.connect(this.destination);
+	      this.source.start(0);
+	    }
+	  }, {
+	    key: '_stop',
+	    value: function _stop() {
+	      console.log('Stopping.');
 	
-	  this.source.stop();
-	  this.source.disconnect();
-	  this.source = undefined;
-	};
+	      if (this.source === undefined) {
+	        return;
+	      }
+	
+	      this.source.stop();
+	      this.source.disconnect();
+	      this.source = undefined;
+	    }
+	  }]);
+	
+	  return BufferSource;
+	}();
 	
 	exports.default = BufferSource;
 
@@ -529,7 +606,11 @@
 	
 	      resolve(source);
 	    }, function () {
-	      fail(arguments);
+	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	        args[_key] = arguments[_key];
+	      }
+	
+	      fail(args);
 	    });
 	  });
 	}
