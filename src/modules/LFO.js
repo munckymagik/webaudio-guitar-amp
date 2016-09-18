@@ -1,5 +1,5 @@
 function LFO(audioCtx, paramToModulate, uiElement) {
-  var self = this;
+  const self = this;
 
   this.speedCtrl = uiElement.querySelector('.js-lfo-speed');
   this.widthCtrl = uiElement.querySelector('.js-lfo-gain');
@@ -14,10 +14,10 @@ function LFO(audioCtx, paramToModulate, uiElement) {
   this.lfoGain.connect(paramToModulate);
   this.lfo.connect(paramToModulate);
 
-  this.speedCtrl.addEventListener('input', function() {
+  this.speedCtrl.addEventListener('input', () => {
     self.lfo.frequency.value = self.speedCtrl.value;
   });
-  this.widthCtrl.addEventListener('input', function() {
+  this.widthCtrl.addEventListener('input', () => {
     self.lfoGain.gain.value = self.widthCtrl.value;
   });
 

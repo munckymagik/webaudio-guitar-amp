@@ -1,7 +1,7 @@
 import '../shims/getUserMedia'
 
 function loadUserMediaSource(audioCtx, signalChain) {
-  var options = {
+  const options = {
     audio: {
       optional: [
         { echoCancellation: false }
@@ -9,19 +9,19 @@ function loadUserMediaSource(audioCtx, signalChain) {
     }
   };
 
-  return new Promise(function(resolve, fail) {
+  return new Promise((resolve, fail) => {
     navigator.getUserMedia(
       options,
-      function(stream) {
+      stream => {
         console.log('Loading stream.');
 
-        var source = audioCtx.createMediaStreamSource(stream);
+        const source = audioCtx.createMediaStreamSource(stream);
         source.connect(signalChain.distortion.input());
 
         resolve(source);
       },
-      function() {
-        fail(arguments);
+      (...args) => {
+        fail(args);
       }
     );
   });
