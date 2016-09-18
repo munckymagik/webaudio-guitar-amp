@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme",
   "devDependencies": {
-    "rollup": "0.35.11"
+    "babel-preset-es2015-rollup": "1.2.0",
+    "rollup": "0.35.11",
+    "rollup-plugin-babel": "2.6.1"
   }
 }
