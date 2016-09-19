@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "build": "webpack",
-    "test": "open index.html"
+    "test": "open index.html",
+    "lint": "eslint ./src/"
   },
   "repository": {
     "type": "git",
