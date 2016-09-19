@@ -7,24 +7,24 @@ function loadUserMediaSource(audioCtx, signalChain) {
         { echoCancellation: false }
       ]
     }
-  };
+  }
 
   return new Promise((resolve, fail) => {
     navigator.getUserMedia(
       options,
       stream => {
-        console.log('Loading stream.');
+        console.log('Loading stream.')
 
-        const source = audioCtx.createMediaStreamSource(stream);
-        source.connect(signalChain.distortion.input());
+        const source = audioCtx.createMediaStreamSource(stream)
+        source.connect(signalChain.distortion.input())
 
-        resolve(source);
+        resolve(source)
       },
       (...args) => {
-        fail(args);
+        fail(args)
       }
-    );
-  });
+    )
+  })
 }
 
 export default loadUserMediaSource
