@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack",
     "test": "open index.html",
-    "lint": "eslint ./src/"
+    "lint": "eslint ./src/",
+    "start": "webpack-dev-server --hot --inline"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "babel-preset-es2015": "6.14.0",
     "eslint": "3.5.0",
     "eslint-loader": "1.5.0",
-    "webpack": "^1.13.2"
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "1.16.1"
   }
 }
