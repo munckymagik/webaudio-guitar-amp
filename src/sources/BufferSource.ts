@@ -1,4 +1,12 @@
 class BufferSource {
+  private audioCtx: AudioContext
+  private buffer: AudioBuffer
+  private destination: AudioNode
+  private source: AudioBufferSourceNode
+
+  public play: () => void
+  public stop: () => void
+
   constructor(audioCtx, buffer, destination) {
     this.audioCtx = audioCtx
     this.buffer = buffer

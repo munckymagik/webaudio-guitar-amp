@@ -2,7 +2,9 @@
 // NodeWrapper (for the sake of a consistent interface when chaining stuff together)
 //
 
-class WebAudioNodeWrapper {
+class WebAudioNodeWrapper<T extends AudioNode> {
+  private node: T
+
   constructor(webaudioNode) {
     this.node = webaudioNode
   }

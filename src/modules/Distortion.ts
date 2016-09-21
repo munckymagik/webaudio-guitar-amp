@@ -16,6 +16,11 @@ function makeDistortionCurve(amount) {
 }
 
 class Distortion {
+  private amountCtrl: HTMLInputElement
+  private toneCtrl: HTMLInputElement
+  private distortion: WaveShaperNode
+  private lowPass: BiquadFilterNode
+
   constructor(audioCtx, uiElement) {
     const self = this
 

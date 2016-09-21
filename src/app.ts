@@ -2,16 +2,21 @@ import buildSignalChain from './signalChain'
 import loadSoundFileSource from './sources/loadSoundFileSource'
 import loadUserMediaSource from './sources/loadUserMediaSource'
 
+let audioCtx: AudioContext
+let signalChain: any
+let soundFilePromise: Promise<any>
+let guitarInputPromise: Promise<any>
+
 function app() {
   console.log('Starting application.')
 
-  const audioCtx = window.__audioCtx = new AudioContext()
-  const signalChain = window.__signalChain = buildSignalChain(audioCtx)
+  audioCtx = new AudioContext()
+  signalChain = buildSignalChain(audioCtx)
 
-  window.__soundFilePromise = loadSoundFileSource(audioCtx, signalChain)
-  window.__guitarInputPromise = loadUserMediaSource(audioCtx, signalChain)
+  soundFilePromise = loadSoundFileSource(audioCtx, signalChain)
+  guitarInputPromise = loadUserMediaSource(audioCtx, signalChain)
 
-  Promise.all([window.__soundFilePromise, window.__guitarInputPromise], (...args) => {
+  Promise.all([soundFilePromise, guitarInputPromise]).then((...args) => {
     console.log('All sources loaded')
     console.log(args)
   }).catch(error => {

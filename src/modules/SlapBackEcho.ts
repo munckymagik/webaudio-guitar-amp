@@ -1,11 +1,20 @@
 // http://www.html5rocks.com/en/tutorials/casestudies/jamwithchrome-audio/
 
 class SlapBackEcho {
+  private _input: GainNode
+  private output: GainNode
+  private uiWetControl: HTMLInputElement
+  private uiFeedbackControl: HTMLInputElement
+  private uiDelayControl: HTMLInputElement
+
   constructor(audioCtx, uiElement) {
     this._input = audioCtx.createGain()
     this.output = audioCtx.createGain()
 
-    const self = this, delay = audioCtx.createDelay(), feedback = audioCtx.createGain(), wetLevel = audioCtx.createGain()
+    const self = this,
+      delay = audioCtx.createDelay(),
+      feedback = audioCtx.createGain(),
+      wetLevel = audioCtx.createGain()
 
     this.uiWetControl = uiElement.querySelector('.js-echo-mix')
     this.uiFeedbackControl = uiElement.querySelector('.js-echo-feedback')
@@ -38,10 +47,6 @@ class SlapBackEcho {
 
   connect(node) {
     this.output.connect(node)
-  }
-
-  setValue(gainValue) {
-    this.gain.gain.value = gainValue
   }
 
   input() {
