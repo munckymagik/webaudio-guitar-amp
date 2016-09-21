@@ -1,3 +1,5 @@
+const webpack = require('webpack')
+
 module.exports = {
   debug: true,
   devtool: 'source-map',
@@ -13,5 +15,8 @@ module.exports = {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
     ]
-  }
+  },
+  plugins: [
+    new webpack.NoErrorsPlugin()
+  ]
 }
