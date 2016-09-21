@@ -6,6 +6,7 @@
     "target": "es6"
   },
   "include": [
+    "./typings/index.d.ts",
     "src/**.ts"
   ]
 }
