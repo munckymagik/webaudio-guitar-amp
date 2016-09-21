@@ -3,7 +3,10 @@ const webpack = require('webpack')
 module.exports = {
   debug: true,
   devtool: 'source-map',
-  entry: './src/main.js',
+  entry: './src/main.ts',
+  resolve: {
+    extensions: ['', '.ts']
+  },
   output: {
     path: __dirname,
     filename: 'bundle.js'
@@ -13,7 +16,7 @@ module.exports = {
       { test: /\.js$/, loader: "eslint-loader", exclude: /node_modules/ }
     ],
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+      { test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader' }
     ]
   },
   plugins: [
