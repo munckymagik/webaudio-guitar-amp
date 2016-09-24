@@ -4,7 +4,10 @@
   "description": "A virtual guitar amp that runs in the browser",
   "main": "app.js",
   "scripts": {
-    "test": "open index.html"
+    "build": "webpack",
+    "test": "open index.html",
+    "lint": "eslint ./src/",
+    "start": "webpack-dev-server --hot --inline"
   },
   "repository": {
     "type": "git",
@@ -15,5 +18,15 @@
   "bugs": {
     "url": "https://github.com/munckymagik/webaudio-guitar-amp/issues"
   },
-  "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme"
+  "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme",
+  "devDependencies": {
+    "babel-cli": "6.14.0",
+    "babel-core": "6.14.0",
+    "babel-loader": "6.2.5",
+    "babel-preset-es2015": "6.14.0",
+    "eslint": "3.5.0",
+    "eslint-loader": "1.5.0",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "1.16.1"
+  }
 }

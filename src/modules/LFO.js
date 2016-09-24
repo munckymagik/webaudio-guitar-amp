@@ -1,27 +1,27 @@
 function LFO(audioCtx, paramToModulate, uiElement) {
-  const self = this;
+  const self = this
 
-  this.speedCtrl = uiElement.querySelector('.js-lfo-speed');
-  this.widthCtrl = uiElement.querySelector('.js-lfo-gain');
+  this.speedCtrl = uiElement.querySelector('.js-lfo-speed')
+  this.widthCtrl = uiElement.querySelector('.js-lfo-gain')
 
-  this.lfo = audioCtx.createOscillator();
-  this.lfoGain = audioCtx.createGain();
+  this.lfo = audioCtx.createOscillator()
+  this.lfoGain = audioCtx.createGain()
 
-  this.lfo.frequency.value = this.speedCtrl.value;
-  this.lfoGain.gain.value = this.widthCtrl.value;
+  this.lfo.frequency.value = this.speedCtrl.value
+  this.lfoGain.gain.value = this.widthCtrl.value
 
-  this.lfo.connect(this.lfoGain);
-  this.lfoGain.connect(paramToModulate);
-  this.lfo.connect(paramToModulate);
+  this.lfo.connect(this.lfoGain)
+  this.lfoGain.connect(paramToModulate)
+  this.lfo.connect(paramToModulate)
 
   this.speedCtrl.addEventListener('input', () => {
-    self.lfo.frequency.value = self.speedCtrl.value;
-  });
+    self.lfo.frequency.value = self.speedCtrl.value
+  })
   this.widthCtrl.addEventListener('input', () => {
-    self.lfoGain.gain.value = self.widthCtrl.value;
-  });
+    self.lfoGain.gain.value = self.widthCtrl.value
+  })
 
-  this.lfo.start();
+  this.lfo.start()
 }
 
 export default LFO

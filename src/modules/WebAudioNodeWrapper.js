@@ -4,15 +4,15 @@
 
 class WebAudioNodeWrapper {
   constructor(webaudioNode) {
-    this.node = webaudioNode;
+    this.node = webaudioNode
   }
 
   connect(node) {
-    this.node.connect(node);
+    this.node.connect(node)
   }
 
   input() {
-    return this.node;
+    return this.node
   }
 }
 
