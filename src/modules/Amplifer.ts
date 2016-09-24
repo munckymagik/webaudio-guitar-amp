@@ -1,13 +1,14 @@
 class Amplifer {
-  constructor(audioCtx, uiElement) {
-    const self = this
+  private gain: GainNode
+  private volumeCtrl: HTMLInputElement
 
+  constructor(audioCtx, uiElement) {
     this.gain = audioCtx.createGain()
     this.volumeCtrl = uiElement.querySelector('.js-amplifier-volume')
 
-    self.setValue(self.volumeCtrl.value)
+    this.setValue(this.volumeCtrl.value)
     this.volumeCtrl.addEventListener('input', () => {
-      self.setValue(self.volumeCtrl.value)
+      this.setValue(this.volumeCtrl.value)
     })
   }
 

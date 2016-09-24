@@ -1,17 +1,29 @@
+const webpack = require('webpack')
+
 module.exports = {
   debug: true,
   devtool: 'source-map',
-  entry: './src/main.js',
+  entry: './src/main.ts',
+  resolve: {
+    extensions: ['', '.ts', '.js']
+  },
   output: {
     path: __dirname,
     filename: 'bundle.js'
   },
   module: {
     preLoaders: [
-      { test: /\.js$/, loader: "eslint-loader", exclude: /node_modules/ }
+      { test: /\.ts$/, loader: 'tslint' }
     ],
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+      { test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader' }
     ]
-  }
+  },
+  tslint: {
+    emitErrors: true,
+    failOnHint: true
+  },
+  plugins: [
+    new webpack.NoErrorsPlugin()
+  ]
 }
