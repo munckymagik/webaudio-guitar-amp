@@ -1,9 +1,9 @@
 import Amplifer from './modules/Amplifer'
+import makeCompressor from './modules/Compressor'
 import Distortion from './modules/Distortion'
 import LFO from './modules/LFO'
 import SlapBackEcho from './modules/SlapBackEcho'
 import WebAudioNodeWrapper from './modules/WebAudioNodeWrapper'
-import makeCompressor from './modules/Compressor'
 
 function buildSignalChain(audioCtx) {
   const distortion = new Distortion(audioCtx, document.querySelector("[data-module='distortion']"))

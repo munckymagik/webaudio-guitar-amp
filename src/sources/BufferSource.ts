@@ -1,11 +1,11 @@
 class BufferSource {
+  public play: () => void
+  public stop: () => void
+
   private audioCtx: AudioContext
   private buffer: AudioBuffer
   private destination: AudioNode
   private source: AudioBufferSourceNode
-
-  public play: () => void
-  public stop: () => void
 
   constructor(audioCtx, buffer, destination) {
     this.audioCtx = audioCtx
@@ -17,7 +17,7 @@ class BufferSource {
     this.stop = this._stop.bind(this)
   }
 
-  _play() {
+  private _play() {
     console.log('Playing ...')
 
     if (this.source !== undefined) {
@@ -30,7 +30,7 @@ class BufferSource {
     this.source.start(0)
   }
 
-  _stop() {
+  private _stop() {
     console.log('Stopping.')
 
     if (this.source === undefined) {

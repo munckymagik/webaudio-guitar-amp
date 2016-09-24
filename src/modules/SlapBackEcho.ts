@@ -11,10 +11,10 @@ class SlapBackEcho {
     this._input = audioCtx.createGain()
     this.output = audioCtx.createGain()
 
-    const self = this,
-      delay = audioCtx.createDelay(),
-      feedback = audioCtx.createGain(),
-      wetLevel = audioCtx.createGain()
+    const self = this
+    const delay = audioCtx.createDelay()
+    const feedback = audioCtx.createGain()
+    const wetLevel = audioCtx.createGain()
 
     this.uiWetControl = uiElement.querySelector('.js-echo-mix')
     this.uiFeedbackControl = uiElement.querySelector('.js-echo-feedback')
