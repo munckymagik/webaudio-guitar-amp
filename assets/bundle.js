@@ -342,7 +342,7 @@
 	    });
 	}
 	function loadSoundFileSource(audioCtx, signalChain) {
-	    return loadSoundFile(audioCtx, '/guitar.mp3').then(function (buffer) {
+	    return loadSoundFile(audioCtx, '/assets/guitar.mp3').then(function (buffer) {
 	        console.log('Loaded OK.');
 	        var source = new BufferSource_1.default(audioCtx, buffer, signalChain.distortion.input());
 	        console.log('Enabling play/stop');

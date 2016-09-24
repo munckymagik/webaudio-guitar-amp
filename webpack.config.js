@@ -1,4 +1,5 @@
 const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
   debug: true,
@@ -8,7 +9,7 @@ module.exports = {
     extensions: ['', '.ts', '.js']
   },
   output: {
-    path: __dirname,
+    path: path.join(__dirname, 'assets'),
     filename: 'bundle.js'
   },
   module: {
