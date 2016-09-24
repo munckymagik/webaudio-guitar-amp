@@ -1,6 +1,0 @@
-{
-  "globalDependencies": {
-    "webaudioapi/waa": "registry:dt/webaudioapi/waa#0.0.0+20160328224055",
-    "webrtc/mediastream": "registry:dt/webrtc/mediastream#0.0.0+20160317120654"
-  }
-}
