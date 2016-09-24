@@ -12,9 +12,6 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    preLoaders: [
-      { test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/ }
-    ],
     loaders: [
       { test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader' }
     ]
