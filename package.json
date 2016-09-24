@@ -6,7 +6,6 @@
   "scripts": {
     "build": "webpack",
     "test": "open index.html",
-    "lint": "eslint ./src/",
     "start": "webpack-dev-server --hot --inline"
   },
   "repository": {
