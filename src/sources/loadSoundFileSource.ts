@@ -17,7 +17,7 @@ function loadSoundFile(context, url) {
 }
 
 function loadSoundFileSource(audioCtx, signalChain) {
-  return loadSoundFile(audioCtx, '/guitar.mp3').then(buffer => {
+  return loadSoundFile(audioCtx, '/assets/guitar.mp3').then(buffer => {
     console.log('Loaded OK.')
     const source = new BufferSource(audioCtx, buffer, signalChain.distortion.input())
 
