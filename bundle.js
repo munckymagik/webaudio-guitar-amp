@@ -91,11 +91,11 @@
 
 	"use strict";
 	var Amplifer_1 = __webpack_require__(3);
-	var Distortion_1 = __webpack_require__(4);
-	var LFO_1 = __webpack_require__(5);
-	var SlapBackEcho_1 = __webpack_require__(6);
-	var WebAudioNodeWrapper_1 = __webpack_require__(7);
-	var Compressor_1 = __webpack_require__(8);
+	var Compressor_1 = __webpack_require__(4);
+	var Distortion_1 = __webpack_require__(5);
+	var LFO_1 = __webpack_require__(6);
+	var SlapBackEcho_1 = __webpack_require__(7);
+	var WebAudioNodeWrapper_1 = __webpack_require__(8);
 	function buildSignalChain(audioCtx) {
 	    var distortion = new Distortion_1.default(audioCtx, document.querySelector("[data-module='distortion']"));
 	    var compressor = new WebAudioNodeWrapper_1.default(Compressor_1.default(audioCtx));
@@ -156,6 +156,25 @@
 /***/ function(module, exports) {
 
 	"use strict";
+	// Based on code from: https://developer.mozilla.org/en-US/docs/Web/API/DynamicsCompressorNode
+	function makeCompressor(audioCtx) {
+	    var compressor = audioCtx.createDynamicsCompressor();
+	    compressor.threshold.value = -50;
+	    compressor.knee.value = 40;
+	    compressor.ratio.value = 12;
+	    compressor.attack.value = 0.25;
+	    compressor.release.value = 0.25;
+	    return compressor;
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = makeCompressor;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
 	// Taken from: https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode
 	function makeDistortionCurve(amount) {
 	    var k = typeof amount === 'number' ? amount : 50;
@@ -202,7 +221,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -230,7 +249,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	// http://www.html5rocks.com/en/tutorials/casestudies/jamwithchrome-audio/
@@ -239,7 +258,10 @@
 	    function SlapBackEcho(audioCtx, uiElement) {
 	        this._input = audioCtx.createGain();
 	        this.output = audioCtx.createGain();
-	        var self = this, delay = audioCtx.createDelay(), feedback = audioCtx.createGain(), wetLevel = audioCtx.createGain();
+	        var self = this;
+	        var delay = audioCtx.createDelay();
+	        var feedback = audioCtx.createGain();
+	        var wetLevel = audioCtx.createGain();
 	        this.uiWetControl = uiElement.querySelector('.js-echo-mix');
 	        this.uiFeedbackControl = uiElement.querySelector('.js-echo-feedback');
 	        this.uiDelayControl = uiElement.querySelector('.js-echo-delay');
@@ -277,7 +299,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	//
@@ -298,25 +320,6 @@
 	}());
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = WebAudioNodeWrapper;
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	"use strict";
-	// Based on code from: https://developer.mozilla.org/en-US/docs/Web/API/DynamicsCompressorNode
-	function makeCompressor(audioCtx) {
-	    var compressor = audioCtx.createDynamicsCompressor();
-	    compressor.threshold.value = -50;
-	    compressor.knee.value = 40;
-	    compressor.ratio.value = 12;
-	    compressor.attack.value = 0.25;
-	    compressor.release.value = 0.25;
-	    return compressor;
-	}
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = makeCompressor;
 
 
 /***/ },
