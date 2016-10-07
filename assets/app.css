@@ -18,11 +18,19 @@ ul li {
   list-style-type: none;
 }
 
+.no-js .modules {
+  display: none;
+}
+
 .panel, [data-module] {
   margin: 12px;
   padding: 12px;
   background-color: #555;
   border-radius: 12px;
+}
+
+.panel--warning {
+  background-color: red;
 }
 
 [data-module] h2 {
