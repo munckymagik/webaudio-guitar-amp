@@ -7,14 +7,18 @@ class BufferSource {
   private destination: AudioNode
   private source: AudioBufferSourceNode
 
-  constructor(audioCtx, buffer, destination) {
+  constructor(audioCtx, buffer) {
     this.audioCtx = audioCtx
     this.buffer = buffer
-    this.destination = destination
+    this.destination = null
     this.source = undefined
 
     this.play = this._play.bind(this)
     this.stop = this._stop.bind(this)
+  }
+
+  public connect(destination: AudioNode) {
+    this.destination = destination
   }
 
   private _play() {

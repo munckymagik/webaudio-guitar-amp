@@ -9,8 +9,8 @@ function app() {
   const signalChain = buildSignalChain(audioCtx)
 
   const sourceLoaderPromises = [
-    loadSoundFileSource(audioCtx, signalChain.distortion.input()),
-    loadUserMediaSource(audioCtx, signalChain.distortion.input())
+    loadSoundFileSource(audioCtx),
+    loadUserMediaSource(audioCtx)
   ]
   let sources = null
 
@@ -19,6 +19,10 @@ function app() {
     console.log(resolutions)
 
     sources = resolutions
+
+    for (const source of sources) {
+      source.connect(signalChain.distortion.input())
+    }
   }).catch((error) => {
     console.log('Error source loading failed', error)
   })
