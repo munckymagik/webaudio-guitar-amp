@@ -1,4 +1,5 @@
 import buildSignalChain from './signalChain'
+import BufferSource from './sources/BufferSource'
 import loadSoundFileSource from './sources/loadSoundFileSource'
 import loadUserMediaSource from './sources/loadUserMediaSource'
 
@@ -12,17 +13,18 @@ function app() {
     loadSoundFileSource(audioCtx),
     loadUserMediaSource(audioCtx)
   ]
-  let sources = null
+  let sources: [any] = null
 
-  Promise.all(sourceLoaderPromises).then((resolutions) => {
+  Promise.all(sourceLoaderPromises).then((resolutions: [any]) => {
     console.log('All sources loaded')
     console.log(resolutions)
 
     sources = resolutions
+    const inputOne: BufferSource = resolutions[0]
+    const inputTwo: MediaStreamAudioSourceNode = resolutions[1]
 
-    for (const source of sources) {
-      source.connect(signalChain.distortion.input())
-    }
+    inputOne.connect(signalChain.input.input1)
+    inputTwo.connect(signalChain.input.input2)
   }).catch((error) => {
     console.log('Error source loading failed', error)
   })
