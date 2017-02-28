@@ -34,5 +34,8 @@ module.exports = {
     new webpack.LoaderOptionsPlugin({
       debug: true
     })
-  ]
+  ],
+  devServer: {
+    publicPath: '/assets/'
+  }
 }

@@ -7,7 +7,7 @@
     "build": "webpack",
     "test": "open index.html",
     "lint": "tslint --project tsconfig.json",
-    "start": "webpack-dev-server --hot"
+    "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
