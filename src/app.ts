@@ -25,6 +25,14 @@ function app() {
 
     inputOne.connect(signalChain.input.input1)
     inputTwo.connect(signalChain.input.input2)
+
+    const onSourceChange = () => {
+      signalChain.input.toggle()
+    }
+
+    Array.from(document.querySelectorAll('[name=source]')).forEach((elem) => {
+      elem.addEventListener('change', onSourceChange)
+    })
   }).catch((error) => {
     console.log('Error source loading failed', error)
   })
