@@ -8,12 +8,17 @@ function app() {
   const audioCtx = new AudioContext()
   const signalChain = buildSignalChain(audioCtx)
 
-  const soundFilePromise = loadSoundFileSource(audioCtx, signalChain.distortion.input())
-  const guitarInputPromise = loadUserMediaSource(audioCtx, signalChain.distortion.input())
+  const sourceLoaderPromises = [
+    loadSoundFileSource(audioCtx, signalChain.distortion.input()),
+    loadUserMediaSource(audioCtx, signalChain.distortion.input())
+  ]
+  let sources = null
 
-  Promise.all([soundFilePromise, guitarInputPromise]).then((...args) => {
+  Promise.all(sourceLoaderPromises).then((resolutions) => {
     console.log('All sources loaded')
-    console.log(args)
+    console.log(resolutions)
+
+    sources = resolutions
   }).catch((error) => {
     console.log('Error source loading failed', error)
   })
@@ -21,9 +26,8 @@ function app() {
   return {
     audioCtx,
     signalChain,
-    soundFilePromise,
-    guitarInputPromise
+    sources
   }
-};
+}
 
 export default app
