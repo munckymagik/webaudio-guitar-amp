@@ -7,7 +7,7 @@
     "build": "webpack",
     "test": "open index.html",
     "lint": "tslint --project tsconfig.json",
-    "start": "webpack-dev-server --hot --inline"
+    "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -20,11 +20,11 @@
   },
   "homepage": "https://github.com/munckymagik/webaudio-guitar-amp#readme",
   "devDependencies": {
-    "ts-loader": "0.8.2",
-    "tslint": "3.15.1",
-    "tslint-loader": "2.1.5",
-    "typescript": "2.0.3",
-    "webpack": "^1.13.2",
-    "webpack-dev-server": "1.16.1"
+    "ts-loader": "2.0.1",
+    "tslint": "4.5.0",
+    "tslint-loader": "3.4.2",
+    "typescript": "2.2.1",
+    "webpack": "2.2.1",
+    "webpack-dev-server": "2.4.1"
   }
 }
