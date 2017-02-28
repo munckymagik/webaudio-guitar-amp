@@ -1,6 +1,6 @@
 import '../shims/getUserMedia'
 
-function loadUserMediaSource(audioCtx, signalChain) {
+function loadUserMediaSource(audioCtx, signalChainInput) {
   const options = {
     audio: {
       optional: [
@@ -16,7 +16,7 @@ function loadUserMediaSource(audioCtx, signalChain) {
         console.log('Loading stream.')
 
         const source = audioCtx.createMediaStreamSource(stream)
-        source.connect(signalChain.distortion.input())
+        source.connect(signalChainInput)
 
         resolve(source)
       },

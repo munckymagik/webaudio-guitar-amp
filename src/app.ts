@@ -8,8 +8,8 @@ function app() {
   const audioCtx = new AudioContext()
   const signalChain = buildSignalChain(audioCtx)
 
-  const soundFilePromise = loadSoundFileSource(audioCtx, signalChain)
-  const guitarInputPromise = loadUserMediaSource(audioCtx, signalChain)
+  const soundFilePromise = loadSoundFileSource(audioCtx, signalChain.distortion.input())
+  const guitarInputPromise = loadUserMediaSource(audioCtx, signalChain.distortion.input())
 
   Promise.all([soundFilePromise, guitarInputPromise]).then((...args) => {
     console.log('All sources loaded')
