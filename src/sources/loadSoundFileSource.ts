@@ -16,10 +16,10 @@ function loadSoundFile(context, url) {
   })
 }
 
-function loadSoundFileSource(audioCtx, signalChain) {
+function loadSoundFileSource(audioCtx) {
   return loadSoundFile(audioCtx, '/assets/guitar.mp3').then((buffer) => {
     console.log('Loaded OK.')
-    const source = new BufferSource(audioCtx, buffer, signalChain.distortion.input())
+    const source = new BufferSource(audioCtx, buffer)
 
     console.log('Enabling play/stop')
     document.querySelector('.js-play').addEventListener('click', source.play)

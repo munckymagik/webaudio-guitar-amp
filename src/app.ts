@@ -1,4 +1,5 @@
 import buildSignalChain from './signalChain'
+import BufferSource from './sources/BufferSource'
 import loadSoundFileSource from './sources/loadSoundFileSource'
 import loadUserMediaSource from './sources/loadUserMediaSource'
 
@@ -8,12 +9,30 @@ function app() {
   const audioCtx = new AudioContext()
   const signalChain = buildSignalChain(audioCtx)
 
-  const soundFilePromise = loadSoundFileSource(audioCtx, signalChain)
-  const guitarInputPromise = loadUserMediaSource(audioCtx, signalChain)
+  const sourceLoaderPromises = [
+    loadSoundFileSource(audioCtx),
+    loadUserMediaSource(audioCtx)
+  ]
+  let sources: [any] = null
 
-  Promise.all([soundFilePromise, guitarInputPromise]).then((...args) => {
+  Promise.all(sourceLoaderPromises).then((resolutions: [any]) => {
     console.log('All sources loaded')
-    console.log(args)
+    console.log(resolutions)
+
+    sources = resolutions
+    const inputOne: BufferSource = resolutions[0]
+    const inputTwo: MediaStreamAudioSourceNode = resolutions[1]
+
+    inputOne.connect(signalChain.input.input1)
+    inputTwo.connect(signalChain.input.input2)
+
+    const onSourceChange = () => {
+      signalChain.input.toggle()
+    }
+
+    Array.from(document.querySelectorAll('[name=source]')).forEach((elem) => {
+      elem.addEventListener('change', onSourceChange)
+    })
   }).catch((error) => {
     console.log('Error source loading failed', error)
   })
@@ -21,9 +40,8 @@ function app() {
   return {
     audioCtx,
     signalChain,
-    soundFilePromise,
-    guitarInputPromise
+    sources
   }
-};
+}
 
 export default app
