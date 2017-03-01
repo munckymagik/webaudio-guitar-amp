@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,33 +73,41 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var signalChain_1 = __webpack_require__(8);
-var loadSoundFileSource_1 = __webpack_require__(10);
-var loadUserMediaSource_1 = __webpack_require__(11);
+var signalChain_1 = __webpack_require__(9);
+var loadSoundFileSource_1 = __webpack_require__(11);
+var loadUserMediaSource_1 = __webpack_require__(12);
 function app() {
     console.log('Starting application.');
     var audioCtx = new AudioContext();
     var signalChain = signalChain_1.default(audioCtx);
-    var soundFilePromise = loadSoundFileSource_1.default(audioCtx, signalChain);
-    var guitarInputPromise = loadUserMediaSource_1.default(audioCtx, signalChain);
-    Promise.all([soundFilePromise, guitarInputPromise]).then(function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    var sourceLoaderPromises = [
+        loadSoundFileSource_1.default(audioCtx),
+        loadUserMediaSource_1.default(audioCtx)
+    ];
+    var sources = null;
+    Promise.all(sourceLoaderPromises).then(function (resolutions) {
         console.log('All sources loaded');
-        console.log(args);
+        console.log(resolutions);
+        sources = resolutions;
+        var inputOne = resolutions[0];
+        var inputTwo = resolutions[1];
+        inputOne.connect(signalChain.input.input1);
+        inputTwo.connect(signalChain.input.input2);
+        var onSourceChange = function () {
+            signalChain.input.toggle();
+        };
+        Array.from(document.querySelectorAll('[name=source]')).forEach(function (elem) {
+            elem.addEventListener('change', onSourceChange);
+        });
     }).catch(function (error) {
         console.log('Error source loading failed', error);
     });
     return {
         audioCtx: audioCtx,
         signalChain: signalChain,
-        soundFilePromise: soundFilePromise,
-        guitarInputPromise: guitarInputPromise
+        sources: sources
     };
 }
-;
 exports.default = app;
 
 
@@ -290,6 +298,39 @@ exports.default = SlapBackEcho;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var TwoInOneOutSwitch = (function () {
+    function TwoInOneOutSwitch(audioCtx) {
+        this.input1 = audioCtx.createGain();
+        this.input2 = audioCtx.createGain();
+        this.output = audioCtx.createGain();
+        this.selector = 0;
+        this.update();
+        this.input1.connect(this.output);
+        this.input2.connect(this.output);
+    }
+    TwoInOneOutSwitch.prototype.connect = function (node) {
+        this.output.connect(node);
+    };
+    TwoInOneOutSwitch.prototype.toggle = function () {
+        this.selector = (this.selector > 0) ? 0 : 1;
+        this.update();
+    };
+    TwoInOneOutSwitch.prototype.update = function () {
+        this.input1.gain.value = 1 - this.selector;
+        this.input2.gain.value = this.selector;
+    };
+    return TwoInOneOutSwitch;
+}());
+exports.default = TwoInOneOutSwitch;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 //
 // NodeWrapper (for the sake of a consistent interface when chaining stuff together)
 //
@@ -311,7 +352,7 @@ exports.default = WebAudioNodeWrapper;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 navigator.getUserMedia = (navigator.getUserMedia ||
@@ -321,7 +362,7 @@ navigator.getUserMedia = (navigator.getUserMedia ||
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -332,20 +373,24 @@ var Compressor_1 = __webpack_require__(2);
 var Distortion_1 = __webpack_require__(3);
 var LFO_1 = __webpack_require__(4);
 var SlapBackEcho_1 = __webpack_require__(5);
-var WebAudioNodeWrapper_1 = __webpack_require__(6);
+var TwoInOneOutSwitch_1 = __webpack_require__(6);
+var WebAudioNodeWrapper_1 = __webpack_require__(7);
 function buildSignalChain(audioCtx) {
+    var input = new TwoInOneOutSwitch_1.default(audioCtx);
     var distortion = new Distortion_1.default(audioCtx, document.querySelector("[data-module='distortion']"));
     var compressor = new WebAudioNodeWrapper_1.default(Compressor_1.default(audioCtx));
     var echo = new SlapBackEcho_1.default(audioCtx, document.querySelector("[data-module='echo']"));
     var panner = new WebAudioNodeWrapper_1.default(audioCtx.createStereoPanner());
     var lfo = new LFO_1.default(audioCtx, panner.input().pan, document.querySelector("[data-module='panner']"));
     var amplifier = new Amplifer_1.default(audioCtx, document.querySelector("[data-module='amplifier']"));
+    input.connect(distortion.input());
     distortion.connect(compressor.input());
     compressor.connect(echo.input());
     echo.connect(panner.input());
     panner.connect(amplifier.input());
     amplifier.connect(audioCtx.destination);
     return {
+        input: input,
         distortion: distortion,
         compressor: compressor,
         echo: echo,
@@ -358,21 +403,24 @@ exports.default = buildSignalChain;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var BufferSource = (function () {
-    function BufferSource(audioCtx, buffer, destination) {
+    function BufferSource(audioCtx, buffer) {
         this.audioCtx = audioCtx;
         this.buffer = buffer;
-        this.destination = destination;
+        this.destination = null;
         this.source = undefined;
         this.play = this._play.bind(this);
         this.stop = this._stop.bind(this);
     }
+    BufferSource.prototype.connect = function (destination) {
+        this.destination = destination;
+    };
     BufferSource.prototype._play = function () {
         console.log('Playing ...');
         if (this.source !== undefined) {
@@ -398,13 +446,13 @@ exports.default = BufferSource;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var BufferSource_1 = __webpack_require__(9);
+var BufferSource_1 = __webpack_require__(10);
 // From http://www.html5rocks.com/en/tutorials/webaudio/intro/
 function loadSoundFile(context, url) {
     return new Promise(function (resolve, fail) {
@@ -418,10 +466,10 @@ function loadSoundFile(context, url) {
         request.send();
     });
 }
-function loadSoundFileSource(audioCtx, signalChain) {
+function loadSoundFileSource(audioCtx) {
     return loadSoundFile(audioCtx, '/assets/guitar.mp3').then(function (buffer) {
         console.log('Loaded OK.');
-        var source = new BufferSource_1.default(audioCtx, buffer, signalChain.distortion.input());
+        var source = new BufferSource_1.default(audioCtx, buffer);
         console.log('Enabling play/stop');
         document.querySelector('.js-play').addEventListener('click', source.play);
         document.querySelector('.js-stop').addEventListener('click', source.stop);
@@ -432,14 +480,14 @@ exports.default = loadSoundFileSource;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(7);
-function loadUserMediaSource(audioCtx, signalChain) {
+__webpack_require__(8);
+function loadUserMediaSource(audioCtx) {
     var options = {
         audio: {
             optional: [
@@ -451,7 +499,6 @@ function loadUserMediaSource(audioCtx, signalChain) {
         navigator.getUserMedia(options, function (stream) {
             console.log('Loading stream.');
             var source = audioCtx.createMediaStreamSource(stream);
-            source.connect(signalChain.distortion.input());
             resolve(source);
         }, function () {
             var args = [];
@@ -466,7 +513,7 @@ exports.default = loadUserMediaSource;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
