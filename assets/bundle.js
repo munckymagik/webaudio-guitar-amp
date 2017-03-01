@@ -467,7 +467,7 @@ function loadSoundFile(context, url) {
     });
 }
 function loadSoundFileSource(audioCtx) {
-    return loadSoundFile(audioCtx, '/assets/guitar.mp3').then(function (buffer) {
+    return loadSoundFile(audioCtx, 'assets/guitar.mp3').then(function (buffer) {
         console.log('Loaded OK.');
         var source = new BufferSource_1.default(audioCtx, buffer);
         console.log('Enabling play/stop');
